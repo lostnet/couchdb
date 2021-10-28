@@ -267,75 +267,78 @@ main(int argc, const char* argv[])
     cx = JS_NewContext(args->stack_size);
     if(cx == NULL)
         return 1;
-
-    JS_SetGlobalJitCompilerOption(cx, JSJITCOMPILER_BASELINE_ENABLE, 0);
-    JS_SetGlobalJitCompilerOption(cx, JSJITCOMPILER_ION_ENABLE, 0);
-
-    if (!JS::InitSelfHostedCode(cx))
-        return 1;
-
-    JS::SetWarningReporter(cx, couch_error);
-    JS::SetOutOfMemoryCallback(cx, couch_oom, NULL);
-    JS_SetContextPrivate(cx, args);
-    JS_SetSecurityCallbacks(cx, &security_callbacks);
-
-    JS::RealmOptions options;
-    JS::RootedObject global(cx, JS_NewGlobalObject(cx, &global_class, nullptr,
-                                                   JS::FireOnNewGlobalHook, options));
-    if (!global)
-        return 1;
-
-    JSAutoRealm ar(cx, global);
-
-    if(!JS::InitRealmStandardClasses(cx))
-        return 1;
-
-    if(couch_load_funcs(cx, global, global_functions) != true)
-        return 1;
-
-    for(i = 0 ; args->scripts[i] ; i++) {
-        const char* filename = args->scripts[i];
-
-        // Compile and run
-        JS::CompileOptions options(cx);
-        options.setFileAndLine(filename, 1);
-        JS::RootedScript script(cx);
-        FILE* fp;
-
-        fp = fopen(args->scripts[i], "r");
-        if(fp == NULL) {
-            fprintf(stderr, "Failed to read file: %s\n", filename);
-            return 3;
-        }
-        script = JS::CompileUtf8File(cx, options, fp);
-        fclose(fp);
-        if (!script) {
-            JS::RootedValue exc(cx);
-            if(!JS_GetPendingException(cx, &exc)) {
-                fprintf(stderr, "Failed to compile file: %s\n", filename);
-            } else {
-                JS::RootedObject exc_obj(cx, &exc.toObject());
-                JSErrorReport* report = JS_ErrorFromException(cx, exc_obj);
-                couch_error(cx, report);
-            }
+    {
+        JS_SetGlobalJitCompilerOption(cx, JSJITCOMPILER_BASELINE_ENABLE, 0);
+        JS_SetGlobalJitCompilerOption(cx, JSJITCOMPILER_ION_ENABLE, 0);
+    
+        if (!JS::InitSelfHostedCode(cx))
             return 1;
-        }
-
-        JS::RootedValue result(cx);
-        if(JS_ExecuteScript(cx, script, &result) != true) {
-            JS::RootedValue exc(cx);
-            if(!JS_GetPendingException(cx, &exc)) {
-                fprintf(stderr, "Failed to execute script.\n");
-            } else {
-                JS::RootedObject exc_obj(cx, &exc.toObject());
-                JSErrorReport* report = JS_ErrorFromException(cx, exc_obj);
-                couch_error(cx, report);
+    
+        JS::SetWarningReporter(cx, couch_error);
+        JS::SetOutOfMemoryCallback(cx, couch_oom, NULL);
+        JS_SetContextPrivate(cx, args);
+        JS_SetSecurityCallbacks(cx, &security_callbacks);
+    
+        JS::RealmOptions options;
+        JS::RootedObject global(cx, JS_NewGlobalObject(cx, &global_class, nullptr,
+                                                       JS::FireOnNewGlobalHook, options));
+        if (!global)
+            return 1;
+    
+        JSAutoRealm ar(cx, global);
+    
+        if(!JS::InitRealmStandardClasses(cx))
+            return 1;
+    
+        if(couch_load_funcs(cx, global, global_functions) != true)
+            return 1;
+    
+        for(i = 0 ; args->scripts[i] ; i++) {
+            const char* filename = args->scripts[i];
+    
+            // Compile and run
+            JS::CompileOptions options(cx);
+            options.setFileAndLine(filename, 1);
+            JS::RootedScript script(cx);
+            FILE* fp;
+    
+            fp = fopen(args->scripts[i], "r");
+            if(fp == NULL) {
+                fprintf(stderr, "Failed to read file: %s\n", filename);
+                return 3;
             }
+            script = JS::CompileUtf8File(cx, options, fp);
+            fclose(fp);
+            if (!script) {
+                JS::RootedValue exc(cx);
+                if(!JS_GetPendingException(cx, &exc)) {
+                    fprintf(stderr, "Failed to compile file: %s\n", filename);
+                } else {
+                    JS::RootedObject exc_obj(cx, &exc.toObject());
+                    JSErrorReport* report = JS_ErrorFromException(cx, exc_obj);
+                    couch_error(cx, report);
+                }
+                return 1;
+            }
+    
+            JS::RootedValue result(cx);
+            if(JS_ExecuteScript(cx, script, &result) != true) {
+                JS::RootedValue exc(cx);
+                if(!JS_GetPendingException(cx, &exc)) {
+                    fprintf(stderr, "Failed to execute script.\n");
+                } else {
+                    JS::RootedObject exc_obj(cx, &exc.toObject());
+                    JSErrorReport* report = JS_ErrorFromException(cx, exc_obj);
+                    couch_error(cx, report);
+                }
+            }
+    
+            // Give the GC a chance to run.
+            JS_MaybeGC(cx);
         }
-
-        // Give the GC a chance to run.
-        JS_MaybeGC(cx);
     }
+    JS_DestroyContext(cx);
+    JS_ShutDown();
 
     return 0;
 }
