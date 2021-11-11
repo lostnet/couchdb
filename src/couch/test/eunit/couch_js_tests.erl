@@ -175,7 +175,7 @@ should_exit_on_oom() ->
         "var state = [];\n"
         "function(doc) {\n"
         "  var val = \"0123456789ABCDEF\";\n"
-        "  for(var i = 0; i < 665535; i++) {\n"
+        "  for(var i = 0; i < 6655350; i++) {\n"
         "    state.push([val, val]);\n"
         "    emit(null, null);\n"
         "  }\n"

@@ -63,8 +63,8 @@ SMVsn = case lists:keyfind(spidermonkey_version, 1, CouchConfig) of
         "68";
     {_, "78"} ->
         "78";
-    {_, "86"} ->
-        "86";
+    {_, "91"} ->
+        "91";
     undefined ->
         "1.8.5";
     {_, Unsupported} ->
@@ -88,6 +88,8 @@ ConfigH = [
 
 CouchJSConfig = case SMVsn of
     "78" ->
+        "priv/couch_js/86/config.h";
+    "91" ->
         "priv/couch_js/86/config.h";
     _ ->
         "priv/couch_js/" ++ SMVsn ++ "/config.h"
@@ -144,10 +146,10 @@ end.
             "-DXP_UNIX -I/usr/include/mozjs-78 -I/usr/local/include/mozjs-78 -std=c++20 -Wno-invalid-offsetof",
             "-L/usr/local/lib -std=c++20 -lmozjs-78 -lm"
         };
-    {unix, _} when SMVsn == "86" ->
+    {unix, _} when SMVsn == "91" ->
         {
-            "-DXP_UNIX -I/usr/include/mozjs-86 -I/usr/local/include/mozjs-86 -I/opt/homebrew/include/mozjs-86/ -std=c++17 -Wno-invalid-offsetof",
-            "-L/usr/local/lib -L /opt/homebrew/lib/ -std=c++17 -lmozjs-86 -lm"
+            "-DXP_UNIX -I/nix/store/dkacrrb854qs5avb55bz77c5w3bfrdxf-spidermonkey-91.2.0-dev/include/mozjs-91 -I/usr/local/include/mozjs-86 -I/opt/homebrew/include/mozjs-86/ -std=c++17 -Wno-invalid-offsetof",
+            "-L/usr/local/lib -L /opt/homebrew/lib/ -std=c++17 -lmozjs-91 -lm"
         }
 end.
 
@@ -156,7 +158,7 @@ CouchJSSrc = case SMVsn of
     "60" -> ["priv/couch_js/60/*.cpp"];
     "68" -> ["priv/couch_js/68/*.cpp"];
     "78" -> ["priv/couch_js/86/*.cpp"];
-    "86" -> ["priv/couch_js/86/*.cpp"]
+    "91" -> ["priv/couch_js/86/*.cpp"]
 end.
 
 CouchJSEnv = case SMVsn of

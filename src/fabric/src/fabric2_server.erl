@@ -51,6 +51,7 @@
 -define(FDB_DIRECTORY, fdb_directory).
 -define(FDB_CLUSTER, fdb_cluster).
 -define(DEFAULT_FDB_DIRECTORY, <<"couchdb">>).
+-define(FDBSERVER_BIN, <<"/nix/store/cpz4m8p2p18ij8nj40cxj59dhrrg1rgp-foundationdb-6.3.22/bin/fdbserver">>).
 -define(TX_OPTIONS_SECTION, "fdb_tx_options").
 -define(RELISTEN_DELAY, 1000).
 
@@ -218,10 +219,11 @@ get_env(Key) ->
     end.
 
 get_db_and_cluster(EunitDbOpts) ->
+    Opts = EunitDbOpts ++ [{fdbserver_bin, ?FDBSERVER_BIN}],
     {Cluster, Db} =
         case application:get_env(fabric, eunit_run) of
             {ok, true} ->
-                {<<"eunit_test">>, erlfdb_util:get_test_db(EunitDbOpts)};
+                {<<"eunit_test">>, erlfdb_util:get_test_db(Opts)};
             undefined ->
                 ClusterFileStr = get_cluster_file_path(),
                 {ok, ConnectionStr} = file:read_file(ClusterFileStr),
