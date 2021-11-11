@@ -330,7 +330,6 @@ void
 couch_oom(JSContext* cx, void* data)
 {
     fprintf(stderr, "out of memory\n");
-    exit(1);
 }
 
 

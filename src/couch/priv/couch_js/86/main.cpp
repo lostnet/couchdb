@@ -58,15 +58,16 @@ static JSClass global_class = {
 };
 
 static JSObject*
-NewSandbox(JSContext* cx, bool lazy)
-{
+NewSandbox(JSContext* cx, bool lazy) {
     JS::RealmOptions options;
-    options.creationOptions().setSharedMemoryAndAtomicsEnabled(enableSharedMemory);
+    options.creationOptions().setSharedMemoryAndAtomicsEnabled(
+        enableSharedMemory);
     options.creationOptions().setNewCompartmentAndZone();
     // we need this in the query server error handling
     options.creationOptions().setToSourceEnabled(enableToSource);
-    JS::RootedObject obj(cx, JS_NewGlobalObject(cx, &global_class, nullptr,
-                                            JS::DontFireOnNewGlobalHook, options));
+    JS::RootedObject
+        obj(cx, JS_NewGlobalObject(cx, &global_class, nullptr,
+            JS::DontFireOnNewGlobalHook, options));
     if (!obj)
         return nullptr;
 
@@ -76,7 +77,8 @@ NewSandbox(JSContext* cx, bool lazy)
             return nullptr;
 
         JS::RootedValue value(cx, JS::BooleanValue(lazy));
-        if (!JS_DefineProperty(cx, obj, "lazy", value, JSPROP_PERMANENT | JSPROP_READONLY))
+        if (!JS_DefineProperty(cx, obj, "lazy", value,
+            JSPROP_PERMANENT | JSPROP_READONLY))
             return nullptr;
 
         JS_FireOnNewGlobalObject(cx, obj);
@@ -88,8 +90,7 @@ NewSandbox(JSContext* cx, bool lazy)
 }
 
 static bool
-evalcx(JSContext *cx, unsigned int argc, JS::Value* vp)
-{
+evalcx(JSContext *cx, unsigned int argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     bool ret = false;
 
@@ -121,7 +122,7 @@ evalcx(JSContext *cx, unsigned int argc, JS::Value* vp)
         return false;
     }
 
-    if(srcBuf.length() == 0) {
+    if (srcBuf.length() == 0) {
         args.rval().setObject(*sandbox);
     } else {
         mozilla::Maybe<JSAutoRealm> ar;
@@ -149,8 +150,7 @@ evalcx(JSContext *cx, unsigned int argc, JS::Value* vp)
 
 
 static bool
-gc(JSContext* cx, unsigned int argc, JS::Value* vp)
-{
+gc(JSContext* cx, unsigned int argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     JS_GC(cx);
     args.rval().setUndefined();
@@ -159,16 +159,15 @@ gc(JSContext* cx, unsigned int argc, JS::Value* vp)
 
 
 static bool
-print(JSContext* cx, unsigned int argc, JS::Value* vp)
-{
+print(JSContext* cx, unsigned int argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
     bool use_stderr = false;
-    if(argc > 1 && args[1].isTrue()) {
+    if (argc > 1 && args[1].isTrue()) {
         use_stderr = true;
     }
 
-    if(!args[0].isString()) {
+    if (!args[0].isString()) {
         JS_ReportErrorUTF8(cx, "Unable to print non-string value.");
         return false;
     }
@@ -181,8 +180,7 @@ print(JSContext* cx, unsigned int argc, JS::Value* vp)
 
 
 static bool
-quit(JSContext* cx, unsigned int argc, JS::Value* vp)
-{
+quit(JSContext* cx, unsigned int argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
     int exit_code = args[0].toInt32();;
@@ -191,8 +189,7 @@ quit(JSContext* cx, unsigned int argc, JS::Value* vp)
 
 
 static bool
-readline(JSContext* cx, unsigned int argc, JS::Value* vp)
-{
+readline(JSContext* cx, unsigned int argc, JS::Value* vp) {
     JSString* line;
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
 
@@ -200,7 +197,7 @@ readline(JSContext* cx, unsigned int argc, JS::Value* vp)
     JS_MaybeGC(cx);
 
     line = couch_readline(cx, stdin);
-    if(line == NULL) return false;
+    if (line == NULL) return false;
 
     // return with JSString* instead of JSValue in the past
     args.rval().setString(line);
@@ -209,8 +206,7 @@ readline(JSContext* cx, unsigned int argc, JS::Value* vp)
 
 
 static bool
-seal(JSContext* cx, unsigned int argc, JS::Value* vp)
-{
+seal(JSContext* cx, unsigned int argc, JS::Value* vp) {
     JS::CallArgs args = JS::CallArgsFromVp(argc, vp);
     JS::RootedObject target(cx);
     target = JS::ToObject(cx, args[0]);
@@ -220,7 +216,8 @@ seal(JSContext* cx, unsigned int argc, JS::Value* vp)
     }
     bool deep = false;
     deep = args[1].toBoolean();
-    bool ret = deep ? JS_DeepFreezeObject(cx, target) : JS_FreezeObject(cx, target);
+    bool ret = deep ? JS_DeepFreezeObject(cx, target) :
+        JS_FreezeObject(cx, target);
     args.rval().setUndefined();
     return ret;
 }
@@ -238,10 +235,9 @@ static JSFunctionSpec global_functions[] = {
 
 
 static bool
-csp_allows(JSContext* cx, JS::HandleString code)
-{
+csp_allows(JSContext* cx, JS::HandleString code) {
     couch_args* args = static_cast<couch_args*>(JS_GetContextPrivate(cx));
-    if(args->eval) {
+    if (args->eval) {
         return true;
     } else {
         return false;
@@ -256,18 +252,7 @@ static JSSecurityCallbacks security_callbacks = {
 
 
 int
-main(int argc, const char* argv[])
-{
-    JSContext* cx = NULL;
-    int i;
-
-    couch_args* args = couch_parse_args(argc, argv);
-
-    JS_Init();
-    cx = JS_NewContext(args->stack_size);
-    if(cx == NULL)
-        return 1;
-
+runWithContext(JSContext* cx, couch_args* args) {
     JS_SetGlobalJitCompilerOption(cx, JSJITCOMPILER_BASELINE_ENABLE, 0);
     JS_SetGlobalJitCompilerOption(cx, JSJITCOMPILER_ION_ENABLE, 0);
 
@@ -281,19 +266,19 @@ main(int argc, const char* argv[])
 
     JS::RealmOptions options;
     JS::RootedObject global(cx, JS_NewGlobalObject(cx, &global_class, nullptr,
-                                                   JS::FireOnNewGlobalHook, options));
+        JS::FireOnNewGlobalHook, options));
     if (!global)
         return 1;
 
     JSAutoRealm ar(cx, global);
 
-    if(!JS::InitRealmStandardClasses(cx))
+    if (!JS::InitRealmStandardClasses(cx))
         return 1;
 
-    if(couch_load_funcs(cx, global, global_functions) != true)
+    if (couch_load_funcs(cx, global, global_functions) != true)
         return 1;
 
-    for(i = 0 ; args->scripts[i] ; i++) {
+    for (int i = 0 ; args->scripts[i] ; i++) {
         const char* filename = args->scripts[i];
 
         // Compile and run
@@ -303,7 +288,7 @@ main(int argc, const char* argv[])
         FILE* fp;
 
         fp = fopen(args->scripts[i], "r");
-        if(fp == NULL) {
+        if (fp == NULL) {
             fprintf(stderr, "Failed to read file: %s\n", filename);
             return 3;
         }
@@ -311,7 +296,7 @@ main(int argc, const char* argv[])
         fclose(fp);
         if (!script) {
             JS::RootedValue exc(cx);
-            if(!JS_GetPendingException(cx, &exc)) {
+            if (!JS_GetPendingException(cx, &exc)) {
                 fprintf(stderr, "Failed to compile file: %s\n", filename);
             } else {
                 JS::RootedObject exc_obj(cx, &exc.toObject());
@@ -322,20 +307,40 @@ main(int argc, const char* argv[])
         }
 
         JS::RootedValue result(cx);
-        if(JS_ExecuteScript(cx, script, &result) != true) {
-            JS::RootedValue exc(cx);
-            if(!JS_GetPendingException(cx, &exc)) {
-                fprintf(stderr, "Failed to execute script.\n");
-            } else {
-                JS::RootedObject exc_obj(cx, &exc.toObject());
-                JSErrorReport* report = JS_ErrorFromException(cx, exc_obj);
-                couch_error(cx, report);
+        if (JS_ExecuteScript(cx, script, &result) != true) {
+            if (!JS_IsThrowingOutOfMemory(cx)) {  // Can't allocate memory?
+                JS::RootedValue exc(cx);
+                if (!JS_GetPendingException(cx, &exc)) {
+                    fprintf(stderr, "Failed to execute script.\n");
+                } else {
+                    JS::RootedObject exc_obj(cx, &exc.toObject());
+                    JSErrorReport* report = JS_ErrorFromException(cx, exc_obj);
+                    couch_error(cx, report);
+                }
             }
+            return 1;
         }
 
         // Give the GC a chance to run.
         JS_MaybeGC(cx);
     }
-
     return 0;
+}
+
+int
+main(int argc, const char* argv[]) {
+    JSContext* cx = NULL;
+    int ret;
+
+    couch_args* args = couch_parse_args(argc, argv);
+
+    JS_Init();
+    cx = JS_NewContext(args->stack_size);
+    if (cx == NULL)
+        return 1;
+    ret = runWithContext(cx, args);
+    JS_DestroyContext(cx);
+    JS_ShutDown();
+
+    return ret;
 }
