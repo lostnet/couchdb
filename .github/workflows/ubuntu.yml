@@ -18,8 +18,12 @@ jobs:
     - uses: actions/checkout@v2
     - name: update
       run: sudo apt-get update
+    - name: wget 
+      run: wget https://www.foundationdb.org/downloads/6.3.21/ubuntu/installers/foundationdb-clients_6.3.21-1_amd64.deb
+    - name: wget 
+      run: wget https://www.foundationdb.org/downloads/6.3.21/ubuntu/installers/foundationdb-server_6.3.21-1_amd64.deb 
     - name: install
-      run: sudo apt-get --no-install-recommends -y install build-essential pkg-config erlang libicu-dev libmozjs-68-dev libcurl4-openssl-dev elixir
+      run: sudo apt-get --no-install-recommends -y install build-essential pkg-config erlang libicu-dev libmozjs-68-dev libcurl4-openssl-dev elixir ./foundationdb-clients_6.3.21-1_amd64.deb ./foundationdb-server_6.3.21-1_amd64.deb 
     - name: configure
       run: ./configure --spidermonkey-version=68 --disable-docs
     - name: Compile
