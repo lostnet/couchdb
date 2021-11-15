@@ -5,6 +5,8 @@ on:
     branches: [ main moz/* ]
   pull_request:
     branches: [ main moz/* ]
+  workflow-dispatch:
+    branches: [ main moz/* ]
 
 jobs:
 
