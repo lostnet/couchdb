@@ -1,0 +1,36 @@
+name: MSBuild
+
+on: [ workflow_dispatch ]
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: .
+
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+
+    - run: choco install git
+    - run: mkdir C:\Relax\
+    - run: cd C:\Relax\
+    - run: git clone https://github.com/apache/couchdb-glazier
+    - run: .\couchdb-glazier\bin\install_dependencies.ps1
+    
+    - run: wget.exe https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+    - run: arc unarchive .\Precompiled.zip
+    - run: copy .\Precompiled\* 'C:\Program Files\erl9.3.3.14\' -Recurse  -Force
+    - run: del Precompiled -Recurse
+    - run: del Precompiled.zip
+    
+    - run: cygwin erlangbuild.sh
+
+
