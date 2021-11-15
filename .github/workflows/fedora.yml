@@ -18,9 +18,9 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: install
-    - run: yum install autoconf autoconf-archive automake curl-devel erlang-asn1 erlang-erts erlang-eunit gcc-c++ erlang-os_mon erlang-xmerl erlang-erl_interface help2man libicu-devel libtool perl-Test-Harness
+      run: yum install autoconf autoconf-archive automake curl-devel erlang-asn1 erlang-erts erlang-eunit gcc-c++ erlang-os_mon erlang-xmerl erlang-erl_interface help2man libicu-devel libtool perl-Test-Harness
     - name: install w/gui
-    - run: sudo yum install erlang-reltool
+      run: sudo yum install erlang-reltool
     - name: Compile
       run: make release
     - name: Run tests
