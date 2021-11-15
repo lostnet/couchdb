@@ -16,8 +16,10 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: update
+      run: sudo apt-get update
     - name: install
-      run: apt-get --no-install-recommends -y install build-essential pkg-config erlang libicu-dev libmozjs-78-dev libcurl4-openssl-dev elixir
+      run: sudo apt-get --no-install-recommends -y install build-essential pkg-config erlang libicu-dev libmozjs-78-dev libcurl4-openssl-dev elixir
     - name: configure
       run: ./configure --spidermonkey-version=78 --disable-docs
     - name: Compile
