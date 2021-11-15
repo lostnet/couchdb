@@ -12,17 +12,17 @@ jobs:
 
   build:
 
-    runs-on: fedora-rawhide
+    runs-on: ubuntu-latest
 
     container:
-      image: fedora-rawhide
+      image: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v2
     - name: install
-      run: yum install autoconf autoconf-archive automake curl-devel erlang-asn1 erlang-erts erlang-eunit gcc-c++ erlang-os_mon erlang-xmerl erlang-erl_interface help2man libicu-devel libtool perl-Test-Harness
-    - name: install w/gui
-      run: sudo yum install erlang-reltool
+      run: apt-get --no-install-recommends -y install build-essential pkg-config erlang libicu-dev libmozjs-78-dev libcurl4-openssl-dev elixir
+    - name: configure
+      run: ./configure --spidermonkey-version=78 --disable-docs
     - name: Compile
       run: make release
     - name: Run tests
