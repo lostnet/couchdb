@@ -1,4 +1,4 @@
-name: Erlang CI
+name: Fedora build CI
 
 on:
   push:
