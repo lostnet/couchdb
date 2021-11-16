@@ -30,9 +30,9 @@ jobs:
         run: |
           mkdir /mnt/c/Relax
           cd /mnt/c/Relax
-          wget https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz
-          wget https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
-          unzip Precompiled.zip
+          wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz
+          wget -q https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+          unzip -q Precompiled.zip
           tar xf firefox-78.15.0esr.source.tar.xz
           ls -l
           ls -l /mnt/c/
