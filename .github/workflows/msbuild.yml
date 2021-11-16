@@ -67,13 +67,18 @@ jobs:
           cd wxWidgets\\build\\msw
           call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
           nmake TARGET_CPU=amd64 BUILD=release SHARED=0 DIR_SUFFIX_CPU= -f makefile.vc
-          
-      - name: Checkout erlang
-        uses: actions/checkout@v2
-        with:
-          repository: erlang/otp
-          path: otp          
 
+# windows git.exe broken on '*' in filenames          
+#      - name: Checkout erlang
+#        uses: actions/checkout@v2
+#        with:
+#          repository: erlang/otp
+#          path: otp          
+          
+      - name: Download source archive
+        run: |
+          git clone https://github.com/erlang/otp
+          
       - name: Compile Erlang
         run: |
           mkdir -p /mnt/c/opt/local64/pgm/
