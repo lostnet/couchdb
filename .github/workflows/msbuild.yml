@@ -68,10 +68,12 @@ jobs:
           call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
           nmake TARGET_CPU=amd64 BUILD=release SHARED=0 DIR_SUFFIX_CPU= -f makefile.vc
           
-      - name: Download source archive
-        run: |
-          git clone https://github.com/erlang/otp
-          
+      - name: Checkout erlang
+        uses: actions/checkout@v2
+        with:
+          repository: erlang/otp
+          ref: OTP-24.1.5
+          path: otp          
 
       - name: Compile Erlang
         run: |
@@ -92,21 +94,24 @@ jobs:
 
       - uses: actions/checkout@v2
 
+      - name: Checkout couchdb-glazier
+        uses: actions/checkout@v2
+        with:
+          repository: apache/couchdb-glazier
+          path: couchdb-glazier
+          
       - name: try couchdb infra
         shell: cmd
         run: |
-          choco install git
           mkdir C:\Relax\
           cd C:\Relax\
-          git clone https://github.com/apache/couchdb-glazier
-          # - run: .\couchdb-glazier\bin\install_dependencies.ps1
-          wget.exe https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz
-          wget.exe https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
-          arc unarchive .\Precompiled.zip
+          wget https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz
+          wget https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+          7z x .\Precompiled.zip
+          7z x .\firefox-78.15.0esr.source.tar.xz
           copy .\Precompiled\* 'C:\Program Files\erl9.3.3.14\' -Recurse  -Force
           del Precompiled -Recurse
           del Precompiled.zip
-    
-      - run: cygwin erlangbuild.sh
+
 
 
