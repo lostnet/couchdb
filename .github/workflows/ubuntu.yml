@@ -17,6 +17,28 @@ jobs:
     steps:
     - name: update
       run: sudo apt-get update
+
+    - name: ICU checkout
+      uses: actions/checkout@v2
+      with:
+        repository: unicode-org/icu
+        path: icubuild
+        
+    - name: ICU4C with gcc     
+      env: 
+        PREFIX: icu
+      run: |
+        cd icubuild
+        mkdir build;
+        cd build;
+        ../icu4c/source/runConfigureICU --enable-debug --disable-release Linux/gcc --prefix=$PREFIX --enable-tracing;
+        make -j2;
+        make -j2 check;
+        ( cd ../icu4c/source/test/depstest && ./depstest.py ../../../../build/ );
+        make install;
+        PATH=$PREFIX/bin:$PATH make -C test/hdrtst check
+
+
     - name: build spidermonkey
       run: |
         wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz        
