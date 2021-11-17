@@ -22,12 +22,12 @@ jobs:
         wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz        
         tar xf firefox-78.15.0esr.source.tar.xz
         cd firefox-78.15.0
-        ls -l
-        cd js/src
+        ls -l  
         export PYTHON=python3
         export M4=m4
         export AWK=awk
         export AC_MACRODIR=$PWD/build/autoconf/
+        cd js/src
         autoconf
         mkdir build_OPT.OBJ
         cd build_OPT.OBJ
