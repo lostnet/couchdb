@@ -42,8 +42,8 @@ jobs:
           export M4=m4
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
-          mkdir ${{github.workspace}}/moz-js
-          export LIBXUL_DIST=${{github.workspace}}/moz-js
+          mkdir /mnt/c/Relax/moz-js
+          export LIBXUL_DIST=/mnt/c/Relax/moz-js
           cd js/src
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
