@@ -30,14 +30,10 @@ jobs:
         run: |
           mkdir /mnt/c/Relax
           cd /mnt/c/Relax
-          wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz
-          wget -q https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
-          unzip -q Precompiled.zip
+          wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz        
           tar xf firefox-78.15.0esr.source.tar.xz
           ls -l
-          ls -l /mnt/c/Program\ Files
-          mv Precompiled /Program\ Files/erl9.3.3.14/
-          rm Precompiled.zip
+          ls -l /mnt/c/Program\ Files         
           
 
       - name: cmd shell
@@ -56,7 +52,15 @@ jobs:
           cd build_OPT.OBJ
           ../configure --disable-ctypes --disable-ion --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
           make
-          
+    
+      - name: Elixir
+        run: |
+          mkdir /mnt/c/Program\ Files/erl9.3.3.14/
+          cd /mnt/c/Program\ Files/erl9.3.3.14/
+          wget -q https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+          unzip -q Precompiled.zip
+          rm Precompiled.zip
+        
       - name: Install openssl
         shell: cmd
         run: |
