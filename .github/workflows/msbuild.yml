@@ -33,15 +33,7 @@ jobs:
           wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz        
           tar xf firefox-78.15.0esr.source.tar.xz
           ls -l
-          ls -l /mnt/c/Program\ Files         
-          
-
-      - name: cmd shell
-        shell: cmd
-        run: |
-          dir C:\
-          dir C:\Relax
-          dir C:\Program\ Files
+          ls -l /mnt/c/Program\ Files
           
       - name: moz-compile
         run: |
