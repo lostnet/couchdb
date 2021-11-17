@@ -28,7 +28,6 @@ jobs:
         export AWK=awk
         export AC_MACRODIR=$PWD/build/autoconf/
         cd js/src
-        autoconf
         mkdir build_OPT.OBJ
         cd build_OPT.OBJ
         ../configure --disable-ctypes --disable-ion --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
