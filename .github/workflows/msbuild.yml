@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: Vampire/setup-wsl@v1
         with:
-          distribution: Ubuntu-18.04
+          distribution: Ubuntu-20.04
 
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
