@@ -24,6 +24,10 @@ jobs:
         cd firefox-78.15.0
         ls -l
         cd js/src
+        export PYTHON=python3
+        export M4=m4
+        export AWK=awk
+        export AC_MACRODIR=$PWD/build/autoconf/
         autoconf
         mkdir build_OPT.OBJ
         cd build_OPT.OBJ
