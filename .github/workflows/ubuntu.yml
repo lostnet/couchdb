@@ -26,7 +26,7 @@ jobs:
         
     - name: ICU4C with gcc     
       env: 
-        PREFIX: icu
+        PREFIX: $PWD/icu
       run: |
         cd icubuild
         mkdir build;
