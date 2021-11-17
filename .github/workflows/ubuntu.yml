@@ -17,7 +17,8 @@ jobs:
     steps:
     - name: update
       run: sudo apt-get update
-
+    - name: install
+      run: sudo apt-get --no-install-recommends -y install autoconf2.13 build-essential pkg-config libcurl4-openssl-dev elixir 
     - name: ICU checkout
       uses: actions/checkout@v2
       with:
@@ -56,14 +57,15 @@ jobs:
         cd build_OPT.OBJ
         ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
         make
+        ls -l
     - name: wget 
       run: wget https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-clients_6.3.22-1_amd64.deb
     - name: wget 
       run: wget https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-server_6.3.22-1_amd64.deb 
     - name: install
-      run: sudo apt-get --no-install-recommends -y install build-essential pkg-config erlang libicu-dev libmozjs-68-dev libcurl4-openssl-dev elixir ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb 
+      run: sudo apt-get --no-install-recommends -y ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb
     - name: configure
-      run: ./configure --spidermonkey-version=68 --disable-docs
+      run: ./configure --spidermonkey-version=78 --disable-docs
     - name: Compile
       run: make release
     - name: Run tests
