@@ -37,14 +37,14 @@ jobs:
         ( cd ../icu4c/source/test/depstest && ./depstest.py ../../../../build/ );
         make install;
         PATH=$PREFIX/bin:$PATH make -C test/hdrtst check
+        ls -l $PREFIX/lib
 
 
     - name: build spidermonkey
       run: |
         wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz        
         tar xf firefox-78.15.0esr.source.tar.xz
-        export CFLAGS="-isystem ${{github.workspace}}/icu/include"
-        export LDFLAGS="-L${{github.workspace}}/icu/lib"
+        export PKG_CONFIG_PATH=${{github.workspace}}/icu/lib/pkgconfig:$PKG_CONFIG_PATH
         cd firefox-78.15.0
         ls -l  
         export PYTHON=python3
