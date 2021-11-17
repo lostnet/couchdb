@@ -67,7 +67,7 @@ jobs:
     - name: wget 
       run: wget https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-server_6.3.22-1_amd64.deb 
     - name: install
-      run: sudo apt-get --no-install-recommends -y ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb
+      run: sudo apt-get --no-install-recommends -y install ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb
     - name: configure
       run: ./configure --spidermonkey-version=91 --disable-docs
     - name: Compile
