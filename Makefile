@@ -91,8 +91,6 @@ DIALYZE_OPTS=$(shell echo "\
 	" | sed -e 's/[a-z]\{1,\}= / /g')
 EXUNIT_OPTS=$(subst $(comma),$(space),$(tests))
 
-TEST_OPTS="-c 'startup_jitter=0' -c 'default_security=admin_local'"
-
 ################################################################################
 # Main commands
 ################################################################################
@@ -142,15 +140,6 @@ fauxton: share/www
 ################################################################################
 
 
-# When we can run all the tests with FDB switch this back to be the default
-# "make check" command
-.PHONY: check-all-tests
-# target: check - Test everything
-check-all-tests: all python-black
-	@$(MAKE) eunit
-	@$(MAKE) mango-test
-	@$(MAKE) elixir
-
 ifdef apps
 subdirs=$(shell echo $(apps) | sed 's/,/ /g')
 else
@@ -158,7 +147,7 @@ subdirs=$(shell ls src)
 endif
 
 .PHONY: check
-check:  all 
+check:  all python-black
 	@$(MAKE) erlfmt-check
 	@$(MAKE) eunit
 	@$(MAKE) elixir-suite
@@ -233,65 +222,39 @@ python-black-update: .venv/bin/black
 		--exclude="build/|buck-out/|dist/|_build/|\.git/|\.hg/|\.mypy_cache/|\.nox/|\.tox/|\.venv/|src/erlfmt|src/rebar/pr2relnotes.py|src/fauxton" \
 		build-aux/*.py dev/run dev/format_*.py src/mango/test/*.py src/docs/src/conf.py src/docs/ext/*.py .
 
-.PHONY: elixir
-elixir: export MIX_ENV=integration
-elixir: export COUCHDB_TEST_ADMIN_PARTY_OVERRIDE=1
-elixir: elixir-init elixir-check-formatted elixir-credo devclean
-	@dev/run "$(TEST_OPTS)" \
-		-a adm:pass \
-		-n 1 \
-		--enable-erlang-views \
-		--locald-config test/elixir/test/config/test-config.ini \
-		--erlang-config rel/files/eunit.config \
-		--no-eval 'mix test --trace --exclude pending $(EXUNIT_OPTS)'
-
-.PHONY: elixir-only
-elixir-only: devclean
-	@dev/run "$(TEST_OPTS)" \
-		-a adm:pass \
-		-n 1 \
-		--enable-erlang-views \
-		--locald-config test/elixir/test/config/test-config.ini \
-		--erlang-config rel/files/eunit.config \
-		--no-eval 'mix test --trace --exclude pending $(EXUNIT_OPTS)'
+.PHONY: elixir-suite
+elixir-suite: elixir-init elixir-check-formatted elixir-credo elixir-integration
 
 .PHONY: elixir-init
-elixir-init: MIX_ENV=test
-elixir-init: config.erl
+elixir-init:
 	@mix local.rebar --force && mix local.hex --force && mix deps.get
 
-.PHONY: elixir-suite
-elixir-suite: export MIX_ENV=integration
-elixir-suite: export COUCHDB_TEST_ADMIN_PARTY_OVERRIDE=1
-elixir-suite: elixir-init elixir-check-formatted elixir-credo devclean
+.PHONY: elixir-check-formatted
+elixir-check-formatted:
+	@mix format --check-formatted
+
+.PHONY: elixir-credo
+# target: elixir-credo: Run the Credo static code analysis tool on Elixir files
+elixir-credo:
+	@mix credo
+
+.PHONY: elixir-integration
+elixir-integration: export MIX_ENV=integration
+elixir-integration: devclean
 	@dev/run -n 1 -q -a adm:pass \
-		--enable-erlang-views \
-		--no-join \
 		--locald-config test/elixir/test/config/test-config.ini \
 		--erlang-config rel/files/eunit.config \
-		--no-eval 'mix test --trace --include test/elixir/test/config/suite.elixir --exclude test/elixir/test/config/skip.elixir'
+		--no-eval 'mix test --trace --include test/elixir/test/config/suite.elixir --exclude test/elixir/test/config/skip.elixir $(EXUNIT_OPTS)'
 
-.PHONY: buggify-elixir-suite
-buggify-elixir-suite: export MIX_ENV=integration
-buggify-elixir-suite: export COUCHDB_TEST_ADMIN_PARTY_OVERRIDE=1
-buggify-elixir-suite: elixir-init devclean
+.PHONY: buggify-elixir-integration
+# target: buggify-elixir-integration - Run ExUnit integration tests while FoundationDB randomly throws errors
+buggify-elixir-integration: export MIX_ENV=integration
+buggify-elixir-integration: devclean
 	@dev/run -n 1 -q -a adm:pass \
-		--enable-erlang-views \
-		--no-join \
 		--locald-config test/elixir/test/config/test-config.ini \
 		--locald-config test/elixir/test/config/buggify-test-config.ini \
 		--erlang-config rel/files/buggify-eunit.config \
-		--no-eval 'mix test --trace --include test/elixir/test/config/suite.elixir --exclude test/elixir/test/config/skip.elixir'
-
-.PHONY: elixir-check-formatted
-elixir-check-formatted: elixir-init
-	@mix format --check-formatted
-
-# Credo is a static code analysis tool for Elixir.
-# We use it in our tests
-.PHONY: elixir-credo
-elixir-credo: elixir-init
-	@mix credo
+		--no-eval 'mix test --trace --include test/elixir/test/config/suite.elixir --exclude test/elixir/test/config/skip.elixir $(EXUNIT_OPTS)'
 
 .PHONY: build-report
 # target: build-report - Generate and upload a build report
@@ -329,12 +292,13 @@ build-test:
 
 .PHONY: mango-test
 # target: mango-test - Run Mango tests
-mango-test: export COUCHDB_TEST_ADMIN_PARTY_OVERRIDE=1
 mango-test: devclean all
 	@cd src/mango && \
 		python3 -m venv .venv && \
 		.venv/bin/python3 -m pip install -r requirements.txt
-	@cd src/mango && ../../dev/run "$(TEST_OPTS)" -n 1 --admin=adm:pass --erlang-config=rel/files/eunit.config '.venv/bin/python3 -m nose -v --with-xunit'
+	@dev/run -n 1 -q -a adm:pass \
+		--erlang-config rel/files/eunit.config \
+		--no-eval 'src/mango/.venv/bin/python3 -m nose -v --where src/mango --with-xunit'
 
 ################################################################################
 # Developing
