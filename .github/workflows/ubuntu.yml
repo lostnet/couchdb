@@ -46,12 +46,14 @@ jobs:
         wget -q https://download.cdn.mozilla.net/pub/firefox/releases/78.15.0esr/source/firefox-78.15.0esr.source.tar.xz        
         tar xf firefox-78.15.0esr.source.tar.xz
         export PKG_CONFIG_PATH=${{github.workspace}}/icu/lib/pkgconfig:$PKG_CONFIG_PATH
+        export AC_MACRODIR=${{github.workspace}}/firefox-78.15.0/build/autoconf/
+        mkdir ${{github.workspace}}/moz-js
+        export LIBXUL_DIST=${{github.workspace}}/moz-js
         cd firefox-78.15.0
         ls -l  
         export PYTHON=python3
         export M4=m4
         export AWK=awk
-        export AC_MACRODIR=$PWD/build/autoconf/
         cd js/src
         mkdir build_OPT.OBJ
         cd build_OPT.OBJ
