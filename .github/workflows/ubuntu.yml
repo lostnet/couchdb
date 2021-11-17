@@ -55,6 +55,7 @@ jobs:
         export M4=m4
         export AWK=awk
         cd js/src
+        sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
         mkdir build_OPT.OBJ
         cd build_OPT.OBJ
         ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
