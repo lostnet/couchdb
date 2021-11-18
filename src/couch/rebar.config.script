@@ -176,8 +176,8 @@ end.
 
 IcuPath = "priv/couch_icu_driver.so".
 IcuSrc = ["priv/icu_driver/*.c"].
-IcuEnv = [{"DRV_CFLAGS",  "$DRV_CFLAGS -DPIC -O2 -fno-common"},
-          {"DRV_LDFLAGS", "$DRV_LDFLAGS -lm -licuuc -licudata -licui18n -lpthread"}].
+IcuEnv = [{"DRV_CFLAGS",  "$DRV_CFLAGS -I/home/runner/work/couchdb/couchdb/icu/include -DPIC -O2 -fno-common"},
+          {"DRV_LDFLAGS", "$DRV_LDFLAGS -L/home/runner/work/couchdb/couchdb/icu/lib -lm -licuuc -licudata -licui18n -lpthread"}].
 IcuDarwinEnv = [{"CFLAGS", "-DXP_UNIX -I/usr/local/opt/icu4c/include -I/opt/homebrew/opt/icu4c/include"},
                 {"LDFLAGS", "-L/usr/local/opt/icu4c/lib -L/opt/homebrew/opt/icu4c/lib"}].
 IcuBsdEnv = [{"CFLAGS", "-DXP_UNIX -I/usr/local/include"},
