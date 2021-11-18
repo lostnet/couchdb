@@ -55,10 +55,7 @@ jobs:
         shell: pwsh
         working-directory: "c:\\Relax\\firefox-91.3.0\\js\\src\\"
         run: |
-          ".\\MozillaBuildSetup-3.4.exe /S"
-          
-      - name: look around
-        run: find /mnt/c/ -name start-shell.bat -print      
+          ".\\MozillaBuildSetup-3.4.exe /S"      
           
       - name: moz-compile
         shell: pwsh
