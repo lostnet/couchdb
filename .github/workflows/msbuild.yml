@@ -53,7 +53,7 @@ jobs:
           
       - name: moz-compile
         shell: cmd
-        working-directory: /mnt/c/Relax/firefox-91.3.0/js/src/build_OPT.OBJ
+        working-directory: "c:\\Relax\\firefox-91.3.0\\js\\src\\build_OPT.OBJ"
         run: |
           set PYTHON=python3
           set M4=m4
