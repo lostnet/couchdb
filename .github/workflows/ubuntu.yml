@@ -1,12 +1,7 @@
 name: Ubuntu build CI
 
 on:
-  push:
-    branches: [ main moz/* ]
-  pull_request:
-    branches: [ main moz/* ]
   workflow_dispatch:
-    branches: [ main moz/* ]
 
 jobs:
 
