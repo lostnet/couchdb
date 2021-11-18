@@ -60,8 +60,6 @@ jobs:
         tar xf firefox-91.3.0esr.source.tar.xz
         export PKG_CONFIG_PATH=${{github.workspace}}/icu/lib/pkgconfig:$PKG_CONFIG_PATH
         export AC_MACRODIR=${{github.workspace}}/firefox-91.3.0/build/autoconf/
-        mkdir ${{github.workspace}}/moz-js
-        export LIBXUL_DIST=${{github.workspace}}/moz-js
         cd firefox-91.3.0
         ls -l  
         export PYTHON=python3
@@ -70,11 +68,11 @@ jobs:
         cd js/src
         sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
         chmod +x configure
-        mkdir build_OPT.OBJ
-        cd build_OPT.OBJ
-        ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
+        mkdir ${{github.workspace}}/build_OPT.OBJ
+        cd ${{github.workspace}}/build_OPT.OBJ
+        ${{github.workspace}}/firefox-91.3.0/js/src/configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
         make
-        make install
+        mv dist ../moz-js
         ls -l ${{github.workspace}}/moz-js
         
     - name: wget 
