@@ -49,7 +49,12 @@ jobs:
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
           mkdir build_OPT.OBJ
+          wget -q https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.4.exe
 
+      - name: moz-compile
+        shell: cmd
+        working-directory: "c:\\Relax\\firefox-91.3.0\\js\\src\\"
+        run: ".\\MozillaBuildSetup-3.4.exe /S"
           
       - name: moz-compile
         shell: cmd
@@ -62,8 +67,8 @@ jobs:
           set VC_PATH="C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\"
           set LIBXUL_DIST=/mnt/c/Relax/moz-js
           "c:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
-          ..\configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
-          make
+          'C:\mozilla-build\start-shell.bat "..\configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows"'
+          'C:\mozilla-build\start-shell.bat "make"'
     
       - name: Elixir
         run: |
