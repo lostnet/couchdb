@@ -49,27 +49,24 @@ jobs:
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
           mkdir build_OPT.OBJ
-          wget -q https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.4.exe
 
       - name: mozbuilder
-        shell: pwsh
-        working-directory: "c:\\Relax\\firefox-91.3.0\\js\\src\\"
         run: |
-          ".\\MozillaBuildSetup-3.4.exe /S"      
+          echo wget -q https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.4.exe
+          echo not running ".\\MozillaBuildSetup-3.4.exe /S"      
           
       - name: moz-compile
-        shell: pwsh
-        working-directory: "c:\\Relax\\firefox-91.3.0\\js\\src\\build_OPT.OBJ"
+        working-directory: "/mnt/c/Relax/firefox-91.3.0/js/src/build_OPT.OBJ"
         run: |
-          set PYTHON=python3
-          set M4=m4
-          set AWK=awk
-          set AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
-          set VC_PATH="C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\"
-          set LIBXUL_DIST=/mnt/c/Relax/moz-js
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
-          "C:\\mozilla-build\\start-shell.bat '../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows'"
-          "C:\\mozilla-build\\start-shell.bat make"
+          export PYTHON=python3
+          export M4=m4
+          export AWK=awk
+          export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
+          export VC_PATH="/mnt/c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/"
+          echo "Not running C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
+          ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/mnt/c/relax/vcpkg/installed/x64-windows
+          make
+          make install
     
       - name: Elixir
         run: |
