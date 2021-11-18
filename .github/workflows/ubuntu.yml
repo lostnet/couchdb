@@ -18,7 +18,7 @@ jobs:
     - name: update
       run: sudo apt-get update
     - name: install
-      run: sudo apt-get --no-install-recommends -y install autoconf2.13 build-essential pkg-config libcurl4-openssl-dev elixir
+      run: sudo apt-get --no-install-recommends -y install autoconf2.13 build-essential pkg-config libcurl4-openssl-dev erlang-dev elixir
     - name: couch checkout
       uses: actions/checkout@v2
       with:
