@@ -52,7 +52,7 @@ jobs:
           wget -q https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.4.exe
 
       - name: mozbuilder
-        shell: cmd
+        shell: pwsh
         working-directory: "c:\\Relax\\firefox-91.3.0\\js\\src\\"
         run: |
           ".\\MozillaBuildSetup-3.4.exe /S"
@@ -61,7 +61,7 @@ jobs:
         run: find '/mnt/c/ -name start-shell.bat -print      
           
       - name: moz-compile
-        shell: cmd
+        shell: pwsh
         working-directory: "c:\\Relax\\firefox-91.3.0\\js\\src\\build_OPT.OBJ"
         run: |
           set PYTHON=python3
