@@ -57,8 +57,8 @@ jobs:
           echo not running ".\\MozillaBuildSetup-3.4.exe /S"      
 
       - name: moz-compile location
-        working-directory: /mnt/c/Relax/firefox-91.3.0/js/src/_build
         run: |
+          cd /mnt/c/Relax/firefox-91.3.0/js/src/_build
           export PYTHON=python3
           export M4=m4
           export AWK=awk
@@ -69,8 +69,8 @@ jobs:
           ls -l ..
           
       - name: moz-compile
-        working-directory: /mnt/c/Relax/firefox-91.3.0/js/src/_build
         run: |
+          cd /mnt/c/Relax/firefox-91.3.0/js/src/_build
           export PYTHON=python3
           export M4=m4
           export AWK=awk
