@@ -42,7 +42,7 @@ jobs:
           export M4=m4
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
-          export VC_PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\"
+          export VC_PATH='C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\'
           mkdir /mnt/c/Relax/moz-js
           export LIBXUL_DIST=/mnt/c/Relax/moz-js
           cd js/src
