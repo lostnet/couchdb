@@ -58,7 +58,7 @@ jobs:
           ".\\MozillaBuildSetup-3.4.exe /S"
           
       - name: look around
-        run: find '/mnt/c/ -name start-shell.bat -print      
+        run: find /mnt/c/ -name start-shell.bat -print      
           
       - name: moz-compile
         shell: pwsh
