@@ -1,0 +1,155 @@
+name: MSBuild
+
+on: [ workflow_dispatch ]
+defaults:
+  run:
+    shell: wsl-bash {0}
+
+env:
+  # Path to the solution file relative to the root of the project.
+  SOLUTION_FILE_PATH: .
+
+  WXWIDGETS_VERSION: 3.1.4
+  # Configuration type to build.
+  # You can convert this to a build matrix if you need coverage of multiple configuration types.
+  # https://docs.github.com/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+  BUILD_CONFIGURATION: Release
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+      - name: look around
+        run: find '/mnt/c/Program Files (x86)/Microsoft Visual Studio/2019' -name vcvars64.bat -print
+      - name: Install WSL dependencies
+        run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
+
+      - name: try couchdb infra
+        run: |
+          mkdir /mnt/c/Relax
+          cd /mnt/c/Relax
+          wget -q https://download.cdn.mozilla.net/pub/firefox/releases/91.3.0esr/source/firefox-91.3.0esr.source.tar.xz        
+          tar xf firefox-91.3.0esr.source.tar.xz
+          ls -l
+          ls -l /mnt/c/Program\ Files
+          
+          
+      - name: moz-compile ubu setup
+        run: |
+          mkdir /mnt/c/Relax/moz-js
+          cd /mnt/c/Relax/firefox-91.3.0
+          export PYTHON=python3
+          export M4=m4
+          export AWK=awk
+          export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
+          cd js/src
+          sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
+          chmod +x configure
+          mkdir build_OPT.OBJ
+
+          
+      - name: moz-compile
+        shell: cmd
+        working-directory: /mnt/c/Relax/firefox-91.3.0/js/src/build_OPT.OBJ
+        run: |
+          set PYTHON=python3
+          set M4=m4
+          set AWK=awk
+          set AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
+          set VC_PATH="C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\"
+          set LIBXUL_DIST=/mnt/c/Relax/moz-js
+          "c:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
+          ..\configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
+          make
+    
+      - name: Elixir
+        run: |
+          mkdir /mnt/c/Program\ Files/erl9.3.3.14/
+          cd /mnt/c/Program\ Files/erl9.3.3.14/
+          wget -q https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+          unzip -q Precompiled.zip
+          rm Precompiled.zip
+        
+      - name: Install openssl
+        shell: cmd
+        run: |
+          choco install openssl
+          move "c:\\Program Files\\OpenSSL-Win64" "c:\\OpenSSL-Win64"
+      - name: Cache wxWidgets
+        uses: actions/cache@v2
+        with:
+          path: wxWidgets
+          key: wxWidgets-${{ env.WXWIDGETS_VERSION }}-${{ runner.os }}
+
+      # actions/cache on Windows sometimes does not set cache-hit even though there was one. Setting it manually.
+      - name: Set wxWidgets cache
+        id: wxwidgets-cache
+        run: |
+          if [ -d wxWidgets ]; then
+            echo "::set-output name=cache-hit::true"
+          else
+            echo "::set-output name=cache-hit::false"
+          fi
+      - name: Download wxWidgets
+        if: steps.wxwidgets-cache.outputs.cache-hit != 'true'
+        run: |
+          wget https://github.com/wxWidgets/wxWidgets/releases/download/v${{ env.WXWIDGETS_VERSION }}/wxWidgets-${{ env.WXWIDGETS_VERSION }}.zip
+          unzip wxWidgets-${{ env.WXWIDGETS_VERSION }}.zip -d wxWidgets
+          sed -i -r -e 's/wxUSE_POSTSCRIPT +0/wxUSE_POSTSCRIPT 1/' wxWidgets/include/wx/msw/setup.h
+          sed -i -r -e 's/wxUSE_WEBVIEW_EDGE +0/wxUSE_WEBVIEW_EDGE 1/' wxWidgets/include/wx/msw/setup.h
+      - name: Install WebView2
+        if: steps.wxwidgets-cache.outputs.cache-hit != 'true'
+        shell: cmd
+        run: |
+          cd wxWidgets\\3rdparty
+          nuget install Microsoft.Web.WebView2 -Version 1.0.705.50 -Source https://api.nuget.org/v3/index.json
+          rename Microsoft.Web.WebView2.1.0.705.50 webview2
+      - name: Build wxWidgets
+        if: steps.wxwidgets-cache.outputs.cache-hit != 'true'
+        shell: cmd
+        run: |
+          cd wxWidgets\\build\\msw
+          call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
+          nmake TARGET_CPU=amd64 BUILD=release SHARED=0 DIR_SUFFIX_CPU= -f makefile.vc
+
+# windows git.exe broken on '*' in filenames          
+#      - name: Checkout erlang
+#        uses: actions/checkout@v2
+#        with:
+#          repository: erlang/otp
+#          path: otp          
+          
+      - name: Download source archive
+        run: |
+          git clone https://github.com/erlang/otp
+          
+      - name: Compile Erlang
+        run: |
+          mkdir -p /mnt/c/opt/local64/pgm/
+          cp -R wxWidgets /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}
+          # tar -xzf ./otp_src.tar.gz
+          cd otp
+          export ERL_TOP=`pwd`
+          export MAKEFLAGS=-j4
+          export ERLC_USE_SERVER=true
+          eval `./otp_build env_win32 x64`
+          ./otp_build configure
+          if cat erts/CONF_INFO || cat lib/*/CONF_INFO || cat lib/*/SKIP || cat lib/SKIP-APPLICATIONS; then exit 1; fi
+          ./otp_build boot -a
+          ./otp_build release -a
+          cp /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}/3rdparty/webview2/runtimes/win-x64/native/WebView2Loader.dll $ERL_TOP/release/win32/erts-*/bin/
+          ./otp_build installer_win32
+
+
+
+      - name: Checkout couchdb-glazier
+        uses: actions/checkout@v2
+        with:
+          repository: apache/couchdb-glazier
+          path: couchdb-glazier
+          
+
+
