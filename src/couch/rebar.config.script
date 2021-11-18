@@ -149,7 +149,7 @@ end.
     {unix, _} when SMVsn == "91" ->
         {
             "-DXP_UNIX -I/home/runner/work/couchdb/couchdb/moz-js/include/mozjs-91 -I/usr/local/include/mozjs-86 -I/opt/homebrew/include/mozjs-86/ -std=c++17 -Wno-invalid-offsetof",
-            "-L/home/runner/work/couchdb/couchdb/moz-js/lib -L /opt/homebrew/lib/ -std=c++17 -lmozjs-91 -lm"
+            "-L/home/runner/work/couchdb/couchdb/moz-js/lib -L/home/runner/work/couchdb/couchdb/icu/lib -std=c++17 -lmozjs-91 -lm"
         }
 end.
 
