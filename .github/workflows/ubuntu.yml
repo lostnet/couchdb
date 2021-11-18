@@ -74,7 +74,9 @@ jobs:
         cd build_OPT.OBJ
         ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
         make
-        ls -l
+        make install
+        ls -l ${{github.workspace}}/moz-js
+        
     - name: wget 
       run: wget https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-clients_6.3.22-1_amd64.deb
     - name: wget 
