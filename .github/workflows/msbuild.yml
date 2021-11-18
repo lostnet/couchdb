@@ -56,7 +56,7 @@ jobs:
           set AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
           set VC_PATH='C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\'
           set LIBXUL_DIST=/mnt/c/Relax/moz-js
-          c:\Program Files (x86)\Microsoft Visual Studio\2017\BuildTools\VC\Auxiliary\Build\vcvars64.bat
+          c:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\BuildTools\VC\Auxiliary\Build\vcvars64.bat
           cd js/src
           cd build_OPT.OBJ
           ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
