@@ -40,6 +40,10 @@ jobs:
         run: |
           mkdir /mnt/c/Relax/moz-js
           cd /mnt/c/Relax/firefox-91.3.0
+          export PYTHON=python3
+          export M4=m4
+          export AWK=awk
+          export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
           cd js/src
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
