@@ -18,7 +18,13 @@ jobs:
     - name: update
       run: sudo apt-get update
     - name: install
-      run: sudo apt-get --no-install-recommends -y install autoconf2.13 build-essential pkg-config libcurl4-openssl-dev elixir 
+      run: sudo apt-get --no-install-recommends -y install autoconf2.13 build-essential pkg-config libcurl4-openssl-dev elixir
+    - name: couch checkout
+      uses: actions/checkout@v2
+      with:
+        path: couch
+    - name: look around
+      run: ls -l      
     - name: ICU checkout
       uses: actions/checkout@v2
       with:
@@ -68,11 +74,15 @@ jobs:
       run: wget https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-server_6.3.22-1_amd64.deb 
     - name: install
       run: sudo apt-get --no-install-recommends -y install ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb
-    - name: look around
-      run: ls -l
     - name: configure
-      run: sh ./configure --spidermonkey-version=91 --disable-docs
+      run: |
+        cd couch
+        sh ./configure --spidermonkey-version=91 --disable-docs
     - name: Compile
-      run: make release
+      run: |
+        cd couch
+        make release
     - name: Run tests
-      run: make check
+      run: |
+        cd couch
+        make check
