@@ -18,13 +18,25 @@ jobs:
     - name: update
       run: sudo apt-get update
     - name: install
-      run: sudo apt-get --no-install-recommends -y install autoconf2.13 build-essential pkg-config libcurl4-openssl-dev erlang-dev elixir
+      run: sudo apt-get --no-install-recommends -y install autoconf2.13 build-essential pkg-config libcurl4-openssl-dev erlang-dev rebar elixir
     - name: couch checkout
       uses: actions/checkout@v2
       with:
         path: couch
     - name: look around
-      run: ls -l      
+      run: ls -l
+      
+    - name: rebar3 checkout
+      uses: actions/checkout@v2
+      with:
+        repository: erlang/rebar3
+        path: rebar3
+        
+    - name: setup rebar3 
+      run: |
+        cd rebar3
+        ./bootstrap
+
     - name: ICU checkout
       uses: actions/checkout@v2
       with:
