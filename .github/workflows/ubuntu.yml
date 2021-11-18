@@ -70,9 +70,9 @@ jobs:
         chmod +x configure
         mkdir ${{github.workspace}}/build_OPT.OBJ
         cd ${{github.workspace}}/build_OPT.OBJ
-        ${{github.workspace}}/firefox-91.3.0/js/src/configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
+        ${{github.workspace}}/firefox-91.3.0/js/src/configure --prefix=${{github.workspace}}/moz-js --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
         make
-        mv dist ../moz-js
+        make install
         ls -l ${{github.workspace}}/moz-js
         
     - name: wget 
