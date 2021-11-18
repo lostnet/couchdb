@@ -42,6 +42,7 @@ jobs:
           export M4=m4
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
+          export VC_PATH="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\"
           mkdir /mnt/c/Relax/moz-js
           export LIBXUL_DIST=/mnt/c/Relax/moz-js
           cd js/src
@@ -49,7 +50,7 @@ jobs:
           chmod +x configure
           mkdir build_OPT.OBJ
           cd build_OPT.OBJ
-          ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2019 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
+          ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
           make
     
       - name: Elixir
