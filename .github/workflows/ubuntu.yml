@@ -65,10 +65,7 @@ jobs:
 
     - name: wget moz
       if: steps.wgetcache.outputs.cache-hit != 'true'
-      run: |
-        wget -q https://download.cdn.mozilla.net/pub/firefox/releases/91.3.0esr/source/firefox-91.3.0esr.source.tar.xz
-        wget -q https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-clients_6.3.22-1_amd64.deb
-        wget -q https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-server_6.3.22-1_amd64.deb
+      run: wget -q https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-server_6.3.22-1_amd64.deb https://www.foundationdb.org/downloads/6.3.22/ubuntu/installers/foundationdb-clients_6.3.22-1_amd64.deb https://download.cdn.mozilla.net/pub/firefox/releases/91.3.0esr/source/firefox-91.3.0esr.source.tar.xz
 
     - name: build spidermonkeycheckout
       run: |
