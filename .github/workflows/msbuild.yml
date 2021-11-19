@@ -24,7 +24,7 @@ jobs:
           distribution: Ubuntu-20.04
           
       - name: look around
-        run: find '/mnt/c/Program Files (x86)/LLVM' '/mnt/c/Program Files/LLVM' -name clang.exe -print
+        run: find '/mnt/c/Program Files/LLVM' -name clang.exe -print
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
 
