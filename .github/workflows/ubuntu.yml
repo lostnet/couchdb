@@ -89,7 +89,7 @@ jobs:
         
     
     - name: install
-      run: sudo apt-get --no-install1 had recent pushes 19 minutes ago-recommends -y install ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb
+      run: sudo apt-get --no-install-recommends -y install ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb
     - name: configure
       run: |
         cd couch
