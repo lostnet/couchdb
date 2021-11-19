@@ -24,7 +24,7 @@ jobs:
           distribution: Ubuntu-20.04
           
       - name: look around
-        run: find '/mnt/c/Program Files (x86)/Microsoft Visual Studio/2019' -name vcvars64.bat -print
+        run: find '/mnt/c/Program Files (x86)/LLVM' '/mnt/c/Program Files/LLVM' -name clang.exe -print
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
 
@@ -75,9 +75,9 @@ jobs:
           export M4=m4
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
-          export VC_PATH="/mnt/c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/"
+          export PATH="/mnt/c/Program Files/LLVM/bin:$PATH"
           echo "Not running C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
-          sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/mnt/c/Relax/vcpkg/installed/x64-windows
+          sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --with-libclang-path="C:\\Program\ Files\\LLVM\\bin" --with-clang-path="C:\\Program\ Files\\LLVM\\bin\\clang.exe" --prefix=/mnt/c/Relax/vcpkg/installed/x64-windows
           make
           make install
     
