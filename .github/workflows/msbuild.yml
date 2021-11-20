@@ -50,6 +50,8 @@ jobs:
           export CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export CLANG_CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program\ Files/LLVM/bin:$PATH"
+          export TEMPDIR="/mnt/c/TEMP"
+          export OS_ARCH="WINNT"
           cd js/src
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
@@ -83,6 +85,8 @@ jobs:
           export CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export CLANG_CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program\ Files/LLVM/bin:$PATH"
+          export TEMPDIR="/mnt/c/TEMP"
+          export OS_ARCH="WINNT"
           echo "Not running C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
           sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --with-libclang-path="/mnt/c/Program\ Files/LLVM/bin" --with-clang-path="/mnt/c/Program\ Files/LLVM/bin/clang.exe" --prefix=/mnt/c/Relax/vcpkg/installed/x64-windows
           make
