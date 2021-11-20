@@ -19,7 +19,8 @@ jobs:
       with:
         path: couch
     - name: look around
-      run: ls -l
+      run: |
+        ls -l
       
     - name: rebar3 checkout
       uses: actions/checkout@v2
@@ -91,6 +92,15 @@ jobs:
     
     - name: install
       run: sudo apt-get --no-install-recommends -y install ./foundationdb-clients_6.3.22-1_amd64.deb ./foundationdb-server_6.3.22-1_amd64.deb
+      
+    - name: setup fdb
+      run: |
+        sudo mkdir -p /var/lib/foundationdb
+        sudo chown foundationdb:foundationdb /var/lib/foundationdb
+        cat /etc/foundationdb/foundationdb.conf
+        ls -l /etc/foundationdb/
+        sudo ln -s /usr/sbin/fdbserver /usr/local/bin/
+        
     - name: configure
       run: |
         cd couch
