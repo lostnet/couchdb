@@ -148,8 +148,8 @@ end.
         };
     {unix, _} when SMVsn == "91" ->
         {
-            "-DXP_UNIX -I/home/runner/work/couchdb/couchdb/moz-js/include/mozjs-91 -I/usr/local/include/mozjs-86 -I/opt/homebrew/include/mozjs-86/ -std=c++17 -Wno-invalid-offsetof",
-            "-L/home/runner/work/couchdb/couchdb/moz-js/lib -L/home/runner/work/couchdb/couchdb/icu/lib -std=c++17 -lmozjs-91 -lm"
+            "-DXP_UNIX -I/usr/local/include/mozjs-91 -I/usr/local/include/mozjs-86 -I/opt/homebrew/include/mozjs-86/ -std=c++17 -Wno-invalid-offsetof",
+            "-L/usr/local/lib -L/home/runner/work/couchdb/couchdb/icu/lib -std=c++17 -lmozjs-91 -lm"
         }
 end.
 
@@ -176,8 +176,8 @@ end.
 
 IcuPath = "priv/couch_icu_driver.so".
 IcuSrc = ["priv/icu_driver/*.c"].
-IcuEnv = [{"DRV_CFLAGS",  "$DRV_CFLAGS -I/home/runner/work/couchdb/couchdb/icu/include -DPIC -O2 -fno-common"},
-          {"DRV_LDFLAGS", "$DRV_LDFLAGS -L/home/runner/work/couchdb/couchdb/icu/lib -lm -licuuc -licudata -licui18n -lpthread"}].
+IcuEnv = [{"DRV_CFLAGS",  "$DRV_CFLAGS -I/usr/local/include -DPIC -O2 -fno-common"},
+          {"DRV_LDFLAGS", "$DRV_LDFLAGS -L/usr/local/lib -lm -licuuc -licudata -licui18n -lpthread"}].
 IcuDarwinEnv = [{"CFLAGS", "-DXP_UNIX -I/usr/local/opt/icu4c/include -I/opt/homebrew/opt/icu4c/include"},
                 {"LDFLAGS", "-L/usr/local/opt/icu4c/lib -L/opt/homebrew/opt/icu4c/lib"}].
 IcuBsdEnv = [{"CFLAGS", "-DXP_UNIX -I/usr/local/include"},
