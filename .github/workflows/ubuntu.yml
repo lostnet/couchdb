@@ -95,11 +95,16 @@ jobs:
       
     - name: setup fdb
       run: |
-        sudo mkdir -p /var/lib/foundationdb
+        sudo mkdir -p /var/lib/foundationdb /usr/local/etc
         sudo chown foundationdb:foundationdb /var/lib/foundationdb
+        sudo chown foundationdb:foundationdb /var/log/foundationdb
         cat /etc/foundationdb/foundationdb.conf
         ls -l /etc/foundationdb/
         sudo ln -s /usr/sbin/fdbserver /usr/local/bin/
+        sudo ln -s /etc/foundationdb/fdb.cluster /usr/local/etc/
+        sudo fdbmonitor
+        sudo fdbserver
+
         
     - name: configure
       run: |
