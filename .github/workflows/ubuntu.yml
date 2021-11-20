@@ -40,7 +40,7 @@ jobs:
         
     - name: ICU4C with gcc     
       env: 
-        PREFIX: ${{github.workspace}}/icu
+        PREFIX: /usr/local
       run: |
         cd icubuild
         mkdir build;
@@ -49,7 +49,7 @@ jobs:
         make -j2;
         make -j2 check;
         ( cd ../icu4c/source/test/depstest && ./depstest.py ../../../../build/ );
-        make install;
+        sudo make install;
         PATH=$PREFIX/bin:$PATH make -C test/hdrtst check
         ls -l $PREFIX/lib
 
@@ -77,17 +77,16 @@ jobs:
         export PYTHON=python3
         export M4=m4
         export AWK=awk
-        export CFLAGS="-I${{github.workspace}}/icu/include"
-        export LDFLAGS="-L${{github.workspace}}/icu/lib"
+        export CFLAGS="-I/usr/local/include"
+        export LDFLAGS="-L/usr/local/lib"
         cd js/src
         sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
         chmod +x configure
         mkdir ${{github.workspace}}/build_OPT.OBJ
         cd ${{github.workspace}}/build_OPT.OBJ
-        ${{github.workspace}}/firefox-91.3.0/js/src/configure --prefix=${{github.workspace}}/moz-js --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
+        ${{github.workspace}}/firefox-91.3.0/js/src/configure --prefix=/usr/local --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal
         make
-        make install
-        ls -l ${{github.workspace}}/moz-js
+        sudo make install
         
     
     - name: install
