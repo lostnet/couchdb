@@ -42,7 +42,7 @@ jobs:
         run: |
           mkdir /mnt/c/Relax/moz-js
           cd /mnt/c/Relax/firefox-91.3.0
-          export PYTHON=python3
+          export PYTHON="/mnt/c/Program\ Files\Python\ 3.7\python3.exe"
           export M4=m4
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
@@ -65,7 +65,7 @@ jobs:
       - name: moz-compile location
         run: |
           cd /mnt/c/Relax/firefox-91.3.0/js/src/_build
-          export PYTHON=python3
+          export PYTHON="/mnt/c/Program\ Files\Python\ 3.7\python3.exe"
           export M4=m4
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
