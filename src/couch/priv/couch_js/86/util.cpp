@@ -129,6 +129,10 @@ couch_parse_args(int argc, const char* argv[])
 {
     couch_args* args;
     int i = 1;
+          cd /mnt/c/Relax/firefox-91.3.0/js/src/_build
+68
+          export PYTHON=python3
+69
 
     args = new couch_args();
     if(args == NULL)
@@ -330,7 +334,7 @@ void
 couch_oom(JSContext* cx, void* data)
 {
     fprintf(stderr, "out of memory\n");
-    exit(1);
+    _Exit(1);
 }
 
 
