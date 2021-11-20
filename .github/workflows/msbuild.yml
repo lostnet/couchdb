@@ -46,6 +46,10 @@ jobs:
           export M4=m4
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
+          export CC_TYPE=clang
+          export CC="/mnt/c/Program Files/LLVM/bin/clang.exe"
+          export CLANG_CC="/mnt/c/Program Files/LLVM/bin/clang.exe"
+          export PATH="/mnt/c/Program Files/LLVM/bin:$PATH"
           cd js/src
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
@@ -76,6 +80,7 @@ jobs:
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
           export CC_TYPE=clang
+          export CC="/mnt/c/Program Files/LLVM/bin/clang.exe"
           export CLANG_CC="/mnt/c/Program Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program Files/LLVM/bin:$PATH"
           echo "Not running C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
