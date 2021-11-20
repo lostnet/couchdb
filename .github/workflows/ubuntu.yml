@@ -102,8 +102,6 @@ jobs:
         ls -l /etc/foundationdb/
         sudo ln -s /usr/sbin/fdbserver /usr/local/bin/
         sudo ln -s /etc/foundationdb/fdb.cluster /usr/local/etc/
-        ls -l /usr/sbin/f*
-        sudo /usr/sbin/fdbserver
 
         
     - name: configure
