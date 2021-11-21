@@ -50,6 +50,7 @@ jobs:
           export CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export CLANG_CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program\ Files/LLVM/bin:$PATH"
+          export TMPDIR=`wslpath -m "/mnt/c/Relax/tmp"`
           export OS_ARCH="WINNT"
           cd js/src
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
