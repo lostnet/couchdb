@@ -51,8 +51,7 @@ jobs:
           export CLANG_CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program\ Files/LLVM/bin:$PATH"
           export TMPDIR=""
-          export OS_ARCH="WINNT"
-          mkdir $TMPDIR          
+          export OS_ARCH="WINNT"          
           cd js/src
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
