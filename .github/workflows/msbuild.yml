@@ -28,7 +28,7 @@ jobs:
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
 
-      - name: try couchdb infra
+      - name: try couchdb infrahttps://github.com/NixOS/nixpkgs/pull/146576
         run: |
           mkdir /mnt/c/Relax
           cd /mnt/c/Relax
@@ -50,7 +50,7 @@ jobs:
           export CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export CLANG_CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program\ Files/LLVM/bin:$PATH"
-          export TMPDIR=""
+          export TMPDIR="."
           export OS_ARCH="WINNT"          
           cd js/src
           sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
