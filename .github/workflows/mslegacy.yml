@@ -24,15 +24,18 @@ jobs:
         .\MozillaBuildSetup-3.3.exe /S
         
     - name: test mozsh
+      shell: cmd
       run: |
         C:\mozilla-build\msys\bin\bash -c echo
         
     - name: test mozsh
+      shell: cmd
       run: |
         C:\mozilla-build\msys\bin\bash -c echo\ --disable-ctypes\ --disable-ion\ --disable-jemalloc
   
   
     - name: test mozsh
+      shell: cmd
       run: |
         C:\mozilla-build\msys\bin\bash -c ls
       
