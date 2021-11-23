@@ -25,8 +25,11 @@ jobs:
         
     - name: test mozsh
       run: |
-        C:\mozilla-build\msys\bin\bash -c ls
-        C:\mozilla-build\msys\bin\bash -c echo --disable-ctypes --disable-ion --disable-jemalloc
+        C:\mozilla-build\msys\bin\bash -c echo
+        
+    - name: test mozsh
+      run: |
+        C:\mozilla-build\msys\bin\bash -c echo --disable-ctypes --disable-ion --disable-jemalloc        
       
     - name: moz checkout
       uses: actions/checkout@v2
