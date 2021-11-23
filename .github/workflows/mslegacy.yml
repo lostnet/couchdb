@@ -23,12 +23,11 @@ jobs:
         wget.exe https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.3.exe
         .\MozillaBuildSetup-3.3.exe /S
         
-    - name: ICU checkout
-      uses: actions/checkout@v2
-      with:
-        repository: unicode-org/icu
-        path: icubuild    
-        
+    - name: test mozsh
+      run: |
+        C:\mozilla-build\start-shell.bat "echo"
+        C:\mozilla-build\start-shell.bat 'echo --disable-ctypes --disable-ion --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows'
+      
     - name: moz checkout
       uses: actions/checkout@v2
       with:
@@ -36,11 +35,19 @@ jobs:
         ref: esr78
         path: gecko-dev
         
+    - name: ICU checkout
+      uses: actions/checkout@v2
+      with:
+        repository: unicode-org/icu
+        path: icubuild
+        
     - name: autoconf mozjs
       working-directory: gecko-dev\js\src
-      run: |
-        mkdir build_OPT.OBJ
-        C:\mozilla-build\start-shell.bat autoconf-2.13
+      run: C:\mozilla-build\start-shell.bat autoconf-2.13
+      
+    - name: builddir for mozjs
+      working-directory: gecko-dev\js\src
+      run: mkdir build_OPT.OBJ
 
     - name: conf mozjs
       working-directory: gecko-dev\js\src\build_OPT.OBJ
