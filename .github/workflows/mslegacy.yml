@@ -23,8 +23,21 @@ jobs:
         wget.exe https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.3.exe
         .\MozillaBuildSetup-3.3.exe /S
         
-    - name: Build
-      working-directory: ${{env.GITHUB_WORKSPACE}}
-      # Add additional options to the MSBuild command line here (like platform or verbosity level).
-      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
-      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
+    - name: ICU checkout
+      uses: actions/checkout@v2
+      with:
+        repository: unicode-org/icu
+        path: icubuild    
+        
+    - name: moz checkout
+      uses: actions/checkout@v2
+      with:
+        repository: mozilla/gecko-dev
+        branch: esr78
+        path: gecko-dev
+        
+    - name: conf mozjs
+      run: C:\mozilla-build\start-shell.bat "cd gecko-dev/js/src; mkdir build_OPT.OBJ; autoconf-2.13"
+
+    - name: conf mozjs
+      run: C:\mozilla-build\start-shell.bat "cd gecko-dev/js/src/build_OPT.OBJ; ../configure --disable-ctypes --disable-ion --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows"
