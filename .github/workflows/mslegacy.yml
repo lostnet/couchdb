@@ -16,7 +16,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: choco install
-      run: choco install windows-sdk-10.1 nodejs-lts wget nasm cyg-get wixtoolset python3 make nssm gpg4win checksum archiver dependencywalker unzip
+      run: choco install wget
       
     - name: moz-build
       run: |
