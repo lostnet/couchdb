@@ -1,0 +1,30 @@
+name: MSLegacy
+
+on: [workflow_dispatch]
+
+env:
+  MOZTOOLS_PATH: C:\mozilla-build\msys\bin;C:\mozilla-build\bin
+  LIBCLANG_PATH: C:\Program Files\LLVM\lib
+  AUTOCONF: C:\mozilla-build\msys\local\bin\autoconf-2.13
+  NATIVE_WIN32_PYTHON: C:\mozilla-build\python\python2.7.exe
+  
+jobs:
+  build:
+    runs-on: windows-2016
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: choco install
+      run: choco install windows-sdk-10.1 nodejs-lts wget nasm cyg-get wixtoolset python3 make nssm gpg4win checksum archiver dependencywalker unzip
+      
+    - name: moz-build
+      run: |
+        wget.exe https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.3.exe
+        .\MozillaBuildSetup-3.3.exe /S
+        
+    - name: Build
+      working-directory: ${{env.GITHUB_WORKSPACE}}
+      # Add additional options to the MSBuild command line here (like platform or verbosity level).
+      # See https://docs.microsoft.com/visualstudio/msbuild/msbuild-command-line-reference
+      run: msbuild /m /p:Configuration=${{env.BUILD_CONFIGURATION}} ${{env.SOLUTION_FILE_PATH}}
