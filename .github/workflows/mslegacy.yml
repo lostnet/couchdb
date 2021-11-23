@@ -33,11 +33,15 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: mozilla/gecko-dev
-        branch: esr78
+        ref: esr78
         path: gecko-dev
         
-    - name: conf mozjs
-      run: C:\mozilla-build\start-shell.bat "cd gecko-dev/js/src; mkdir build_OPT.OBJ; autoconf-2.13"
+    - name: autoconf mozjs
+      working-directory: gecko-dev\js\src
+      run: |
+        mkdir build_OPT.OBJ
+        C:\mozilla-build\start-shell.bat autoconf-2.13
 
     - name: conf mozjs
-      run: C:\mozilla-build\start-shell.bat "cd gecko-dev/js/src/build_OPT.OBJ; ../configure --disable-ctypes --disable-ion --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows"
+      working-directory: gecko-dev\js\src\build_OPT.OBJ
+      run: C:\mozilla-build\start-shell.bat "../configure --disable-ctypes --disable-ion --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows"
