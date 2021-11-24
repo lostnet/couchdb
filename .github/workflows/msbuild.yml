@@ -26,11 +26,12 @@ jobs:
       - name: look around
         run: find '/mnt/c/Program Files/LLVM' -name clang.exe -print
         
+      - name: Install vcpkg dependencies
+        shell: pwsh
+        run: vcpkg.exe install icu openssl
+        
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
-        
-      - name: Install vcpkg dependencies
-        run: vcpkg install icu openssl
 
       - name: try couchdb infra
         run: |
