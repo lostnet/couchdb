@@ -25,8 +25,12 @@ jobs:
           
       - name: look around
         run: find '/mnt/c/Program Files/LLVM' -name clang.exe -print
+        
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
+        
+      - name: Install vcpkg dependencies
+        run: vcpkg install icu openssl
 
       - name: try couchdb infra
         run: |
@@ -47,8 +51,6 @@ jobs:
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
           export CC_TYPE=clang
-          export CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
-          export CLANG_CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program\ Files/LLVM/bin:$PATH"
           export TMPDIR="."
           export OS_ARCH="WINNT"          
@@ -64,11 +66,6 @@ jobs:
       - name: mozbuilder install    
         shell: cmd
         run: .\MozillaBuildSetup-3.4.exe /S   
-
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        with:
-          limit-access-to-actor: true
 
       - name: moz-compile location
         run: |
@@ -90,14 +87,17 @@ jobs:
           export AWK=awk
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
           export CC_TYPE=clang
-          export CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
-          export CLANG_CC="/mnt/c/Program\ Files/LLVM/bin/clang.exe"
           export PATH="/mnt/c/Program\ Files/LLVM/bin:$PATH"
           export OS_ARCH="WINNT"
           echo "Not running C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
-          sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --with-libclang-path="/mnt/c/Program\ Files/LLVM/bin" --with-clang-path="/mnt/c/Program\ Files/LLVM/bin/clang.exe" --prefix=/mnt/c/Relax/vcpkg/installed/x64-windows
+          sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/mnt/c/Relax/vcpkg/installed/x64-windows
           make
           make install
+          
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
     
       - name: Elixir
         run: |
@@ -112,6 +112,7 @@ jobs:
         run: |
           choco install openssl
           move "c:\\Program Files\\OpenSSL-Win64" "c:\\OpenSSL-Win64"
+          
       - name: Cache wxWidgets
         uses: actions/cache@v2
         with:
