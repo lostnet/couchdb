@@ -59,8 +59,16 @@ jobs:
 
       - name: mozbuilder
         run: |
-          echo wget -q https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.4.exe
-          echo not running ".\\MozillaBuildSetup-3.4.exe /S"      
+          wget -q https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.4.exe
+          
+      - name: mozbuilder install    
+        shell: cmd
+        run: .\MozillaBuildSetup-3.4.exe /S   
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
       - name: moz-compile location
         run: |
