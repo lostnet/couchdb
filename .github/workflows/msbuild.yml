@@ -34,7 +34,10 @@ jobs:
           
       - name: Install vcpkg dependencies
         shell: pwsh
-        run: vcpkg.exe install icu openssl
+        run: |
+          Install-Module VSSetup -Scope CurrentUser -Force
+          vcpkg.exe install icu openssl
+          New-Item -Path C:\vcpkg\installed\x64-windows\lib\VC -ItemType SymbolicLink -Value C:\vcpkg\installed\x64-windows\lib
         
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
