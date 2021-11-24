@@ -11,7 +11,6 @@ env:
   INCLUDE: C:\relax\vcpkg\installed\x64-windows\include
   LIBPATH: C:\relax\vcpkg\installed\x64-windows\lib
   VCPKG_BIN: C:\relax\vcpkg\installed\x64-windows\bin
-  PATH: C:\Program Files\erl9.3.3.14\bin;C:\relax\vcpkg\installed\x64-windows\bin
   
 jobs:
   build:
