@@ -34,7 +34,8 @@ jobs:
         
     - name: autoconf mozjs
       working-directory: gecko-dev\js\src
-      run: C:\mozilla-build\msys\bin\bash autoconf-2.13
+      shell: bash
+      run: autoconf-2.13
       
     - name: builddir for mozjs
       working-directory: gecko-dev\js\src
