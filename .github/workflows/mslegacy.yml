@@ -38,7 +38,7 @@ jobs:
       shell: bash
       run: |
           cd gecko-dev/js/src
-          ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
+          bash ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
       
     - name: builddir for mozjs
