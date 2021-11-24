@@ -11,6 +11,8 @@ env:
   INCLUDE: C:\relax\vcpkg\installed\x64-windows\include
   LIBPATH: C:\relax\vcpkg\installed\x64-windows\lib
   VCPKG_BIN: C:\relax\vcpkg\installed\x64-windows\bin
+  M4: m4
+  AWK: awk
   
 jobs:
   build:
@@ -33,11 +35,9 @@ jobs:
         path: icubuild
         
     - name: autoconf mozjs
-      working-directory: gecko-dev\js\src
       shell: bash
       run: |
-          export M4=m4
-          export AWK=awk
+          cd gecko-dev/js/src
           ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
       
@@ -47,5 +47,6 @@ jobs:
 
     - name: conf mozjs
       shell: bash
-      working-directory: gecko-dev\js\src\build_OPT.OBJ
-      run:  ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
+      run: |
+        cd gecko-dev/js/src/build_OPT.OBJ
+        ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
