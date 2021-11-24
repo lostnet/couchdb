@@ -7,6 +7,11 @@ env:
   LIBCLANG_PATH: C:\Program Files\LLVM\lib
   AUTOCONF: C:\mozilla-build\msys\local\bin\autoconf-2.13
   NATIVE_WIN32_PYTHON: C:\mozilla-build\python\python2.7.exe
+  LIB: C:\relax\vcpkg\installed\x64-windows\lib
+  INCLUDE: C:\relax\vcpkg\installed\x64-windows\include
+  LIBPATH: C:\relax\vcpkg\installed\x64-windows\lib
+  VCPKG_BIN: C:\relax\vcpkg\installed\x64-windows\bin
+  PATH: C:\Program Files\erl9.3.3.14\bin;C:\relax\vcpkg\installed\x64-windows\bin
   
 jobs:
   build:
@@ -15,30 +20,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    - name: choco install
-      run: choco install wget
-      
-    - name: moz-build
-      run: |
-        wget.exe https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.3.exe
-        .\MozillaBuildSetup-3.3.exe /S
-        
-    - name: Setup tmate session
-      uses: mxschmitt/action-tmate@v3
-      with:
-        limit-access-to-actor: true
-        
-    - name: test mozsh
-      shell: cmd
-      run: |
-        C:\mozilla-build\msys\bin\bash -c echo\ --disable-ctypes\ --disable-ion\ --disable-jemalloc
-  
-  
-    - name: test mozsh
-      shell: cmd
-      run: |
-        C:\mozilla-build\msys\bin\bash -c ls
-      
     - name: moz checkout
       uses: actions/checkout@v2
       with:
@@ -61,5 +42,6 @@ jobs:
       run: mkdir build_OPT.OBJ
 
     - name: conf mozjs
+      shell: bash
       working-directory: gecko-dev\js\src\build_OPT.OBJ
-      run: C:\mozilla-build\msys\bin\bash -c ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
+      run:  ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
