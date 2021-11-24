@@ -35,7 +35,11 @@ jobs:
     - name: autoconf mozjs
       working-directory: gecko-dev\js\src
       shell: bash
-      run: autoconf-2.13
+      run: |
+          export M4=m4
+          export AWK=awk
+          ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
+          chmod +x configure
       
     - name: builddir for mozjs
       working-directory: gecko-dev\js\src
