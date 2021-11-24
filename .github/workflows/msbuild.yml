@@ -28,7 +28,7 @@ jobs:
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
 
-      - name: try couchdb infrahttps://github.com/NixOS/nixpkgs/pull/146576
+      - name: try couchdb infra
         run: |
           mkdir /mnt/c/Relax
           cd /mnt/c/Relax
