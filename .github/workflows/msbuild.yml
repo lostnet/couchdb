@@ -42,12 +42,6 @@ jobs:
           ls -l
           ls -l /mnt/c/Program\ Files
           
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-        timeout-minutes: 15
-        with:
-          limit-access-to-actor: true
-          
       - name: moz-compile ubu setup
         run: |
           mkdir /mnt/c/Relax/moz-js
