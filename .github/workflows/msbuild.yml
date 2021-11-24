@@ -22,15 +22,12 @@ jobs:
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
-          
-      - name: look around
-        run: find '/mnt/c/Program Files/LLVM' -name clang.exe -print
         
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 15
         with:
           limit-access-to-actor: true
-          timeout-minutes: 15
           
       - name: Install vcpkg dependencies
         shell: pwsh
@@ -51,6 +48,11 @@ jobs:
           ls -l
           ls -l /mnt/c/Program\ Files
           
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        timeout-minutes: 15
+        with:
+          limit-access-to-actor: true
           
       - name: moz-compile ubu setup
         run: |
