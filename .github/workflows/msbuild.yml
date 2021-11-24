@@ -28,7 +28,7 @@ jobs:
         run: |
           Install-Module VSSetup -Scope CurrentUser -Force
           vcpkg.exe install icu openssl
-          New-Item -Path C:\vcpkg\installed\x64-windows\lib\VC -ItemType SymbolicLink -Value C:\vcpkg\installed\x64-windows\lib
+          vcpkg.exe integrate install
         
       - name: Install WSL dependencies
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
@@ -93,6 +93,7 @@ jobs:
           export AC_MACRODIR=/mnt/c/Relax/firefox-91.3.0/build/autoconf/
           export CC_TYPE=clang-cl
           export OS_ARCH="WINNT"
+          export VC_PATH="/mnt/c/Program Files (x86)/Microsoft Visual Studio/2019/Enterprise/"
           echo "Not running C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
           sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/mnt/c/Relax/vcpkg/installed/x64-windows
           make
