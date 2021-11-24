@@ -23,10 +23,10 @@ jobs:
         wget.exe https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-3.3.exe
         .\MozillaBuildSetup-3.3.exe /S
         
-    - name: test mozsh
-      shell: cmd
-      run: |
-        C:\mozilla-build\msys\bin\bash -c echo
+    - name: Setup tmate session
+      uses: mxschmitt/action-tmate@v3
+      with:
+        limit-access-to-actor: true
         
     - name: test mozsh
       shell: cmd
