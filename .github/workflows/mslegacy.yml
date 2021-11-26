@@ -21,6 +21,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
+    - name: Install deps on windows
+      shell: powershell
+      run: |
+        Start-BitsTransfer -Source https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe -Destination ./MozillaBuildSetup.exe
+        .\MozillaBuildSetup.exe /S | Out-Null
+
     - name: moz checkout
       uses: actions/checkout@v2
       with:
