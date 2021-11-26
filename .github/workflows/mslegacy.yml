@@ -42,18 +42,18 @@ jobs:
         path: icubuild
         
     - name: ICU4C build     
-      shell: pwsh
+      shell: cmd
       continue-on-error: true
       run: |
         cd icubuild
-        msbuild source\allinone\allinone.sln /p:Configuration=Release /p:Platform=x64
+        msbuild.exe source\allinone\allinone.sln /p:Configuration=Release /p:Platform=x64
         
     - name: ICU4C check     
-      shell: pwsh
+      shell: cmd
       continue-on-error: true
       run: |
         cd icubuild
-        \source\allinone\icucheck.bat x64 Release        
+        source\allinone\icucheck.bat x64 Release        
 
     - name: find autoconf
       shell: bash
