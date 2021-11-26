@@ -44,14 +44,22 @@ jobs:
       shell: python
       working-directory: gecko-dev\js\src
       continue-on-error: true
-      run: subprocess.run(["C:\mozilla-build\msys\local\bin\autoconf-2.13"])
+      run: |
+        import subprocess
+        subprocess.run(["C:\mozilla-build\msys\local\bin\autoconf-2.13"])
       
     - name: builddir for mozjs
       working-directory: gecko-dev\js\src
       run: mkdir build_OPT.OBJ
 
     - name: conf mozjs
-      shell: bash
+      working-directory: gecko-dev\js\src\build_OPT.OBJ
+      shell: python
+      env:
+        SRCDIR: ${ github.workspace}\gecko-dev\js\src
+        OLDCONFIGURE: ${ github.workspace }\gecko-dev\js\src\old-configure
+        TOPSRCDIR: ${ github.workspace }\gecko-dev
       run: |
+        import subprocess
         cd gecko-dev/js/src/build_OPT.OBJ
-        /c/mozilla-build/msys/bin/sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
+        subrocess.run(["..\..\..\configure", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug --enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"]
