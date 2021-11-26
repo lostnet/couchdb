@@ -41,11 +41,10 @@ jobs:
         path: icubuild
         
     - name: autoconf mozjs
-      shell: powershell
+      shell: python
+      working-directory: gecko-dev\js\src
       continue-on-error: true
-      run: |
-          cd gecko-dev\js\src
-          C:\mozilla-build\msys\local\bin\autoconf-2.13
+      run: subprocess.run(["C:\mozilla-build\msys\local\bin\autoconf-2.13"])
       
     - name: builddir for mozjs
       working-directory: gecko-dev\js\src
