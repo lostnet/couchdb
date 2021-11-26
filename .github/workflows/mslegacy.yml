@@ -1,6 +1,6 @@
 name: MSLegacy
 
-on: [workflow_dispatch]
+on: [workflow_dispatch,push]
 
 env:
   MOZTOOLS_PATH: C:\mozilla-build\msys\bin;C:\mozilla-build\bin
@@ -53,7 +53,9 @@ jobs:
       working-directory: gecko-dev\js\src
       continue-on-error: true
       run: |
-        find C:\mozilla-build -type f -print        
+        find /c/mozilla-build -type f -print
+        find /mnt/c/mozilla-build -type f -print
+        find c:\\mozilla-build -type f -print
       
     - name: autoconf mozjs
       shell: python
@@ -76,4 +78,4 @@ jobs:
         TOPSRCDIR: ${ github.workspace }\gecko-dev
       run: |
         import subprocess
-        subrocess.run(["..\..\..\configure", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug --enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"])
+        subprocess.run(["..\..\..\configure", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug --enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"])
