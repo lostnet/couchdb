@@ -41,12 +41,11 @@ jobs:
         path: icubuild
         
     - name: autoconf mozjs
-      shell: bash
+      shell: powershell
       continue-on-error: true
       run: |
-          cd gecko-dev/js/src
-          sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
-          chmod +x configure
+          cd gecko-dev\js\src
+          C:\mozilla-build\msys\local\bin\autoconf-2.13
       
     - name: builddir for mozjs
       working-directory: gecko-dev\js\src
@@ -56,4 +55,4 @@ jobs:
       shell: bash
       run: |
         cd gecko-dev/js/src/build_OPT.OBJ
-        ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
+        /c/mozilla-build/msys/bin/sh ../configure --disable-ctypes --disable-jit --disable-jemalloc --enable-optimize --enable-hardening --with-intl-api --build-backends=RecursiveMake --with-visual-studio-version=2017 --with-system-icu --disable-debug --enable-gczeal --target=x86_64-pc-mingw32 --host=x86_64-pc-mingw32 --prefix=/c/relax/vcpkg/installed/x64-windows
