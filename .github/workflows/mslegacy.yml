@@ -65,8 +65,8 @@ jobs:
         import os
         env = os.environ.copy()
         print(env['PATH'])
-        env['PATH'] = 'C:\mozilla-build\msys\bin:C:\mozilla-build\msys\local\bin:'+env['PATH']
-        subprocess.run(["/c/mozilla-build/msys/local/bin/autoconf-2.13"], env=env)
+        env['PATH'] = 'C:\mozilla-build\msys\bin;C:\mozilla-build\msys\local\bin;'+env['PATH']
+        subprocess.run(["autoconf-2.13"], env=env)
         
     - name: builddir for mozjs
       working-directory: gecko-dev\js\src
@@ -77,7 +77,7 @@ jobs:
       shell: python
       env:
         SRCDIR: ${ github.workspace}\gecko-dev\js\src
-        OLDCONFIGURE: ${ github.workspace }\gecko-dev\js\src\old-configure
+        OLD_CONFIGURE: ${ github.workspace }\gecko-dev\js\src\old-configure
         TOPSRCDIR: ${ github.workspace }\gecko-dev
       run: |
         import subprocess
