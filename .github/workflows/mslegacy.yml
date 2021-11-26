@@ -42,9 +42,10 @@ jobs:
         
     - name: autoconf mozjs
       shell: bash
+      continue-on-error: true
       run: |
           cd gecko-dev/js/src
-          bash ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
+          sh ../../build/autoconf/autoconf.sh --localdir=$PWD configure.in > configure
           chmod +x configure
       
     - name: builddir for mozjs
