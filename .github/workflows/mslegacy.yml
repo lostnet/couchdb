@@ -53,9 +53,8 @@ jobs:
       working-directory: gecko-dev\js\src
       continue-on-error: true
       run: |
-        find /c/mozilla-build -type f -print
-        find /mnt/c/mozilla-build -type f -print
-        find c:\\mozilla-build -type f -print
+        find /c/mozilla-build -type f -name auto\* -print
+
       
     - name: autoconf mozjs
       shell: python
@@ -78,4 +77,4 @@ jobs:
         TOPSRCDIR: ${ github.workspace }\gecko-dev
       run: |
         import subprocess
-        subprocess.run(["..\..\..\configure", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug --enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"])
+        subprocess.run(["../../../configure.py", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug --enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"])
