@@ -11,6 +11,7 @@ env:
   INCLUDE: C:\relax\vcpkg\installed\x64-windows\include
   LIBPATH: C:\relax\vcpkg\installed\x64-windows\lib
   VCPKG_BIN: C:\relax\vcpkg\installed\x64-windows\bin
+  ICU_PATH: ${github.workspace}\icubuild
   M4: m4
   AWK: awk
   
@@ -39,7 +40,21 @@ jobs:
       with:
         repository: unicode-org/icu
         path: icubuild
-              
+        
+    - name: ICU4C build     
+      shell: pwsh
+      continue-on-error: true
+      run: |
+        cd icubuild
+        msbuild source\allinone\allinone.sln /p:Configuration=Release /p:Platform=x64
+        
+    - name: ICU4C check     
+      shell: pwsh
+      continue-on-error: true
+      run: |
+        cd icubuild
+        \source\allinone\icucheck.bat x64 Release        
+
     - name: find autoconf
       shell: bash
       working-directory: gecko-dev\js\src
@@ -56,7 +71,7 @@ jobs:
         import subprocess
         import os
         env = os.environ.copy()
-        env['PATH'] = 'C:\mozilla-build\msys\bin;C:\mozilla-build\msys\local\bin;'+env['PATH']
+        env['PATH'] = 'C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;'+env['PATH']
         print(env['PATH'])        
         subprocess.run(["autoconf-2.13"], env=env)
         
