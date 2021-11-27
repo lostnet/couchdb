@@ -68,7 +68,6 @@ jobs:
 
     - name: find things
       shell: bash
-      working-directory: gecko-dev\js\src
       continue-on-error: true
       run: |
         find icubuild -name icu-i18n.pc -print
@@ -103,5 +102,5 @@ jobs:
         import subprocess
         import os
         env = os.environ.copy()
-        env['PKG_CONFIG_PATH']+=';' + env['ICU_PKG_CONFIG_PATH']
+        env['PKG_CONFIG_PATH']=env['ICU_PKG_CONFIG_PATH']
         subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"], env=env)
