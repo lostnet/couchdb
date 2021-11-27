@@ -11,7 +11,7 @@ env:
   INCLUDE: C:\relax\vcpkg\installed\x64-windows\include
   LIBPATH: C:\relax\vcpkg\installed\x64-windows\lib
   VCPKG_BIN: C:\relax\vcpkg\installed\x64-windows\bin
-  ICU_PATH: ${{github.workspace}}\icubuild
+  ICU_PATH: ${{github.workspace}}\icubuild\icu4c\bin
   ICU_PKG_CONFIG_PATH: ${{github.workspace}}\icubuild\lib\pkgconfig
   M4: m4
   AWK: awk
@@ -70,8 +70,8 @@ jobs:
       shell: bash
       continue-on-error: true
       run: |
-        find icubuild -name icu-i18n.pc -print
-        find icubuild -name icu-i18n.pc -exec cat {} \; -print
+        find icubuild -name \*.pc -print
+        find icubuild -name icu-config -print
         find /c/mozilla-build -type f -name autoconf-2.13 -print
         ls -l /c/mozilla-build/msys/local/bin/autoconf-2.13
       
@@ -102,5 +102,5 @@ jobs:
         import subprocess
         import os
         env = os.environ.copy()
-        env['PKG_CONFIG_PATH']=env['ICU_PKG_CONFIG_PATH']
+        env['PATH'] = env['ICU_PATH']+';'+env['PATH']
         subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"], env=env)
