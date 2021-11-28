@@ -45,27 +45,14 @@ jobs:
         repository: mozilla/gecko-dev
         ref: esr78
         path: gecko-dev
-        
-    - name: ICU checkout
-      uses: actions/checkout@v2
-      with:
-        repository: unicode-org/icu
-        path: icubuild
-        
-    - name: ICU4C build     
-      shell: cmd
-      continue-on-error: true
-      run: |
-        cd icubuild\icu4c
-        "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\MSBuild\15.0\Bin\msbuild.exe" source\allinone\allinone.sln /p:Configuration=Release /p:Platform=x64
-        
-    - name: ICU4C check     
-      shell: cmd
-      continue-on-error: true
-      run: |
-        cd icubuild\icu4c
-        source\allinone\icucheck.bat x64 Release        
 
+    - name: Install vcpkg dependencies
+      shell: pwsh
+      run: |
+        Install-Module VSSetup -Scope CurrentUser -Force
+        vcpkg.exe install icu openssl
+        vcpkg.exe integrate install
+        
     - name: find things
       shell: bash
       continue-on-error: true
@@ -98,6 +85,9 @@ jobs:
         SRCDIR: ${ github.workspace}\gecko-dev\js\src
         OLD_CONFIGURE: ${ github.workspace }\gecko-dev\js\src\old-configure
         TOPSRCDIR: ${ github.workspace }\gecko-dev
+        LIB: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib"
+        INCLUDE: "C:\\relax\\vcpkg\\installed\\x64-windows\\include"
+        LIBPATH: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib"
       run: |
         import subprocess
         import os
