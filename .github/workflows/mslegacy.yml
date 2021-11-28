@@ -3,16 +3,12 @@ name: MSLegacy
 on: [workflow_dispatch,push]
 
 env:
-  MOZTOOLS_PATH: C:\mozilla-build\msys\bin;C:\mozilla-build\bin
-  LIBCLANG_PATH: C:\Program Files\LLVM\lib
-  AUTOCONF: C:\mozilla-build\msys\local\bin\autoconf-2.13
-  NATIVE_WIN32_PYTHON: C:\mozilla-build\python\python2.7.exe
-  LIB: C:\relax\vcpkg\installed\x64-windows\lib
-  INCLUDE: C:\relax\vcpkg\installed\x64-windows\include
-  LIBPATH: C:\relax\vcpkg\installed\x64-windows\lib
-  VCPKG_BIN: C:\relax\vcpkg\installed\x64-windows\bin
-  ICU_PATH: ${{github.workspace}}\icubuild\icu4c\bin
-  ICU_PKG_CONFIG_PATH: ${{github.workspace}}\icubuild\lib\pkgconfig
+  AUTOCONF: "C:\\mozilla-build\\msys\\local\\bin\\autoconf-2.13"
+  NATIVE_WIN32_PYTHON: "C:\\mozilla-build\\python\\python2.7.exe"
+  LIB: "C:\\vcpkg\\installed\\x64-windows\\lib"
+  INCLUDE: "C:\\vcpkg\\installed\\x64-windows\\include"
+  LIBPATH: "C:\\vcpkg\\installed\\x64-windows\\lib"
+  PKG_CONFIG_PATH: "C:\\vcpkg\\installed\\x64-windows\\lib\\pkgconfig"  
   M4: m4
   AWK: awk
   
@@ -31,7 +27,6 @@ jobs:
         env = os.environ.copy()
         env['PATH'] = 'C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;'+env['PATH']
         print(env)        
-        print(env['ICU_PKG_CONFIG_PATH'])
 
     - name: Install deps on windows
       shell: powershell
@@ -88,10 +83,6 @@ jobs:
         SRCDIR: ${{ github.workspace}}\gecko-dev\js\src
         OLD_CONFIGURE: ${{ github.workspace }}\gecko-dev\js\src\old-configure
         TOPSRCDIR: ${{ github.workspace }}\gecko-dev
-        LIB: "C:\\vcpkg\\installed\\x64-windows\\lib"
-        INCLUDE: "C:\\vcpkg\\installed\\x64-windows\\include"
-        LIBPATH: "C:\\vcpkg\\installed\\x64-windows\\lib"
-        PKG_CONFIG_PATH: "C:\\vcpkg\\installed\\x64-windows\\lib\\pkgconfig"
       run: |
         import subprocess
         import os
