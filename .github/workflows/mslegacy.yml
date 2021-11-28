@@ -56,10 +56,11 @@ jobs:
       shell: bash
       continue-on-error: true
       run: |
-        find icubuild -name \*.pc -print
-        find icubuild -name icu-config -print
+        find /c/vcpkg -name \*.pc -exec cat {} \; -print
         find /c/mozilla-build -type f -name \*make\* -print
         ls -l /c/mozilla-build/msys/local/bin/autoconf-2.13
+        echo lld
+        find /c/PROGRA~1/LLVM/bin/ -name \*lld\* -print
       
     - name: autoconf mozjs
       shell: python
