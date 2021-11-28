@@ -85,9 +85,9 @@ jobs:
       working-directory: gecko-dev\js\src\build_OPT.OBJ
       shell: python
       env:
-        SRCDIR: ${ github.workspace}\gecko-dev\js\src
-        OLD_CONFIGURE: ${ github.workspace }\gecko-dev\js\src\old-configure
-        TOPSRCDIR: ${ github.workspace }\gecko-dev
+        SRCDIR: ${{ github.workspace}}\gecko-dev\js\src
+        OLD_CONFIGURE: ${{ github.workspace }}\gecko-dev\js\src\old-configure
+        TOPSRCDIR: ${{ github.workspace }}\gecko-dev
         LIB: "C:\\vcpkg\\installed\\x64-windows\\lib"
         INCLUDE: "C:\\vcpkg\\installed\\x64-windows\\include"
         LIBPATH: "C:\\vcpkg\\installed\\x64-windows\\lib"
@@ -98,3 +98,12 @@ jobs:
         env = os.environ.copy()
         env['PATH'] = 'C:\\mozilla-build\\bin;C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;'+env['PATH']
         subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/relax/vcpkg/installed/x64-windows"], env=env)
+
+    - name: make
+      shell: python
+      run: |
+        import subprocess
+        import os
+        env = os.environ.copy()
+        env['PATH'] = 'C:\\mozilla-build\\bin;C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;'+env['PATH']
+        subprocess.run(["mozmake"], env=env)
