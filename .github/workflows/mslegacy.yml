@@ -46,11 +46,14 @@ jobs:
         ref: esr78
         path: gecko-dev
 
+    - name: choco install
+      run: choco install pkgconfiglite
+      
     - name: Install vcpkg dependencies
       shell: pwsh
       run: |
         Install-Module VSSetup -Scope CurrentUser -Force
-        vcpkg.exe install icu openssl
+        vcpkg.exe install icu
         vcpkg.exe integrate install
         
     - name: find things
