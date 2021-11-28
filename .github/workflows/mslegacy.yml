@@ -38,6 +38,12 @@ jobs:
       run: |
         Start-BitsTransfer -Source https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe -Destination ./MozillaBuildSetup.exe
         .\MozillaBuildSetup.exe /S | Out-Null
+        
+    - name: make
+      working-directory: js\src\_build
+      shell: powershell
+      run: |
+        C:\mozilla-build\bin\mozmake        
 
     - name: moz checkout
       uses: actions/checkout@v2
@@ -62,7 +68,7 @@ jobs:
       run: |
         find icubuild -name \*.pc -print
         find icubuild -name icu-config -print
-        find /c/mozilla-build -type f -name autoconf-2.13 -print
+        find /c/mozilla-build -type f -name \*make\* -print
         ls -l /c/mozilla-build/msys/local/bin/autoconf-2.13
       
     - name: autoconf mozjs
@@ -103,4 +109,4 @@ jobs:
       working-directory: js\src\_build
       shell: powershell
       run: |
-        C:\mozilla-build\bin\mozmake.exe
+        C:\mozilla-build\bin\mozmake
