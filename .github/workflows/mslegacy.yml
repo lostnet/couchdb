@@ -38,12 +38,6 @@ jobs:
       run: |
         Start-BitsTransfer -Source https://ftp.mozilla.org/pub/mozilla/libraries/win32/MozillaBuildSetup-Latest.exe -Destination ./MozillaBuildSetup.exe
         .\MozillaBuildSetup.exe /S | Out-Null
-        
-    - name: make
-      working-directory: js\src\_build
-      shell: powershell
-      run: |
-        C:\mozilla-build\bin\mozmake        
 
     - name: moz checkout
       uses: actions/checkout@v2
@@ -106,7 +100,7 @@ jobs:
         subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/vcpkg/installed/x64-windows"], env=env)
 
     - name: make
-      working-directory: js\src\_build
+      working-directory: gecko-dev\js\src\_build
       shell: powershell
       run: |
-        C:\mozilla-build\bin\mozmake
+        C:\mozilla-build\bin\mozmake.exe
