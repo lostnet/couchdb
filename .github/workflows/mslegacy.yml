@@ -88,10 +88,10 @@ jobs:
         SRCDIR: ${ github.workspace}\gecko-dev\js\src
         OLD_CONFIGURE: ${ github.workspace }\gecko-dev\js\src\old-configure
         TOPSRCDIR: ${ github.workspace }\gecko-dev
-        LIB: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib"
-        INCLUDE: "C:\\relax\\vcpkg\\installed\\x64-windows\\include"
-        LIBPATH: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib"
-        PKG_CONFIG_PATH: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib\\pkgconfig"
+        LIB: "C:\\vcpkg\\installed\\x64-windows\\lib"
+        INCLUDE: "C:\\vcpkg\\installed\\x64-windows\\include"
+        LIBPATH: "C:\\vcpkg\\installed\\x64-windows\\lib"
+        PKG_CONFIG_PATH: "C:\\vcpkg\\installed\\x64-windows\\lib\\pkgconfig"
       run: |
         import subprocess
         import os
