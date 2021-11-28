@@ -88,6 +88,7 @@ jobs:
         LIB: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib"
         INCLUDE: "C:\\relax\\vcpkg\\installed\\x64-windows\\include"
         LIBPATH: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib"
+        PKG_CONFIG_PATH: "C:\\relax\\vcpkg\\installed\\x64-windows\\lib\\pkgconfig"
       run: |
         import subprocess
         import os
