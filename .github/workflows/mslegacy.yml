@@ -89,7 +89,7 @@ jobs:
         run: |
           git clone https://github.com/erlang/otp
           cd otp
-          git checkout maint${{ otp-version }}
+          git checkout maint${{ matrix.otp-version }}
           
       - name: Compile Erlang
         run: |
@@ -108,14 +108,14 @@ jobs:
           cp /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}/3rdparty/webview2/runtimes/win-x64/native/WebView2Loader.dll $ERL_TOP/release/win32/erts-*/bin/
           ./otp_build installer_win32
           ./release/win32/otp_win64_*.exe /S
-          tar -cvJf ../otp-${{otp-version}}.tar.xz ./release/win32/otp_win64_*.exe
+          tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz ./release/win32/otp_win64_*.exe
           
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            otp-${{otp-version}}.tar.xz
+            otp-${{ matrix.otp-version }}.tar.xz
 
   mozjs:
     strategy:
@@ -145,7 +145,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: mozilla/gecko-dev
-        ref: esr${{ mozjs-version }}
+        ref: esr${{ matrix.mozjs-version }}
         path: gecko-dev
 
     - name: choco install
@@ -205,11 +205,11 @@ jobs:
     - name: package
       shell: bash
       run: |        
-        tar cvjf vcpkgmozjs${{mozjs-version}}.tar.xz /c/vcpkg
+        tar cvjf vcpkgmozjs${{matrix.mozjs-version}}.tar.xz /c/vcpkg
         
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
-            vcpkgmozjs${{mozjs-version}}.tar.xz
+            vcpkgmozjs${{matrix.mozjs-version}}.tar.xz
