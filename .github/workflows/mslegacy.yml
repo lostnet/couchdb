@@ -27,12 +27,12 @@ jobs:
       - name: update
         shell: bash
         run: |
-          /c/msys64/usr/bin/bash.exe -c pacman -Syu
-          /c/msys64/usr/bin/bash.exe -c pacman -Su
+          C:\msys64\usr\bin\bash.exe -l -c "pacman -Syu"
+          C:\msys64\usr\bin\bash.exe -l -c "pacman -Su"
           
       - name: install icu
         shell: bash
-        run: /c/msys64/usr/bin/bash.exe -c pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel
+        run: C:\msys64\usr\bin\bash.exe -l -c "pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel"
         
       - name: find things
         shell: bash
