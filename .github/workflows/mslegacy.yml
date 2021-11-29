@@ -109,6 +109,7 @@ jobs:
           
       - name: Release
         uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
             otp_win64_*.exe          
@@ -138,7 +139,7 @@ jobs:
       uses: actions/checkout@v2
       with:
         repository: mozilla/gecko-dev
-        ref: esr78
+        ref: esr91
         path: gecko-dev
 
     - name: choco install
@@ -150,17 +151,6 @@ jobs:
         Install-Module VSSetup -Scope CurrentUser -Force
         vcpkg.exe install icu
         vcpkg.exe integrate install
-        
-    - name: find things
-      shell: bash
-      continue-on-error: true
-      run: |
-        find /c/vcpkg -name icu\*.dll -print
-        find /c/vcpkg -name \*.pc -exec cat {} \; -print
-        find /c/mozilla-build -type f -name \*make\* -print
-        ls -l /c/mozilla-build/msys/local/bin/autoconf-2.13
-        echo lld
-        find /c/PROGRA~1/LLVM/bin/ -name \*lld\* -print
       
     - name: autoconf mozjs
       shell: python
@@ -208,6 +198,7 @@ jobs:
         
     - name: Release
       uses: softprops/action-gh-release@v1
+      if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
             vcpkgmozjs.tar.xz
