@@ -9,6 +9,7 @@ env:
   LIB: "C:\\vcpkg\\installed\\x64-windows\\lib;C:\\vcpkg\\installed\\x64-windows\\bin"
   INCLUDE: "C:\\vcpkg\\installed\\x64-windows\\include"
   LIBPATH: "C:\\vcpkg\\installed\\x64-windows\\lib"
+  LDFLAGS: "/LIBPATH:C:\\vcpkg\\installed\\x64-windows\\lib /LIBPATH:C:\\vcpkg\\installed\\x64-windows\\bin icuin.lib icudt.lib icuuc.lib"
   PKG_CONFIG_PATH: "C:\\vcpkg\\installed\\x64-windows\\lib\\pkgconfig"  
   M4: m4
   AWK: awk
@@ -27,12 +28,12 @@ jobs:
       - name: update
         shell: bash
         run: |
-          C:\msys64\usr\bin\bash.exe -l -c "pacman -Syu"
-          C:\msys64\usr\bin\bash.exe -l -c "pacman -Su"
+          C:\\msys64\\usr\\bin\\bash.exe -l -c "pacman -Syu"
+          C:\\msys64\\usr\\bin\\bash.exe -l -c "pacman -Su"
           
       - name: install icu
         shell: bash
-        run: C:\msys64\usr\bin\bash.exe -l -c "pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel"
+        run: C:\\msys64\\usr\\bin\\bash.exe -l -c "pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel"
         
       - name: find things
         shell: bash
