@@ -6,7 +6,7 @@ env:
   ADD_PATH: "C:\\mozilla-build\\bin;C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;C:\\vcpkg\\installed\\x64-windows\\bin;"
   AUTOCONF: "C:\\mozilla-build\\msys\\local\\bin\\autoconf-2.13"
   NATIVE_WIN32_PYTHON: "C:\\mozilla-build\\python\\python2.7.exe"
-  LIB: "C:\\vcpkg\\installed\\x64-windows\\lib"
+  LIB: "C:\\vcpkg\\installed\\x64-windows\\lib;C:\\vcpkg\\installed\\x64-windows\\bin"
   INCLUDE: "C:\\vcpkg\\installed\\x64-windows\\include"
   LIBPATH: "C:\\vcpkg\\installed\\x64-windows\\lib"
   PKG_CONFIG_PATH: "C:\\vcpkg\\installed\\x64-windows\\lib\\pkgconfig"  
