@@ -25,13 +25,15 @@ jobs:
           find /c/msys64 -name bash\* -print
 
       - name: update
-        shell: cmd
+        shell: bash
         run: |
-          C:\msys64\bin\bask -c pacman -Syu
-          C:\msys64\bin\bash -c pacman -Su
+          /c/msys64/usr/bin/bash.exe -c pacman -Syu
+          /c/msys64/usr/bin/bash.exe -c pacman -Su
+          
       - name: install icu
-        shell: powershell
-        run: C:\msys64\bin\bash -c pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel
+        shell: bash
+        run: /c/msys64/usr/bin/bash.exe -c pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel
+        
       - name: find things
         shell: bash
         continue-on-error: true
