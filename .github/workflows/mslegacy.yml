@@ -14,6 +14,24 @@ env:
   AWK: awk
   
 jobs:
+  msys:
+    runs-on: windows-2016
+    steps:
+      - name: update
+        shell: cmd
+        run: |
+          C:\msys64\bin\pacman -Syu
+          C:\msys64\bin\pacman -Su
+      - name: install icu
+        shell: powershell
+        run: C:\msys64\bin\pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel
+      - name: find things
+        shell: bash
+        continue-on-error: true
+        run: |
+          find /c/msys64 -name icu\*.pc -exec cat {} \; -print
+        
+  
   build:
     runs-on: windows-2016
 
