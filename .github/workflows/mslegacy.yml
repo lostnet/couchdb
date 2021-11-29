@@ -27,15 +27,8 @@ jobs:
           distribution: Ubuntu-20.04
           
       - name: Install WSL dependencies
+        shell: bash
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
-
-      - name: Elixir
-        run: |
-          mkdir /mnt/c/Program\ Files/erl9.3.3.14/
-          cd /mnt/c/Program\ Files/erl9.3.3.14/
-          wget -q https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
-          unzip -q Precompiled.zip
-          rm Precompiled.zip
         
       - name: Install openssl
         shell: cmd
@@ -51,6 +44,7 @@ jobs:
 
       # actions/cache on Windows sometimes does not set cache-hit even though there was one. Setting it manually.
       - name: Set wxWidgets cache
+        shell: bash
         id: wxwidgets-cache
         run: |
           if [ -d wxWidgets ]; then
@@ -60,11 +54,13 @@ jobs:
           fi
       - name: Download wxWidgets
         if: steps.wxwidgets-cache.outputs.cache-hit != 'true'
+        shell: bash
         run: |
           wget https://github.com/wxWidgets/wxWidgets/releases/download/v${{ env.WXWIDGETS_VERSION }}/wxWidgets-${{ env.WXWIDGETS_VERSION }}.zip
           unzip wxWidgets-${{ env.WXWIDGETS_VERSION }}.zip -d wxWidgets
           sed -i -r -e 's/wxUSE_POSTSCRIPT +0/wxUSE_POSTSCRIPT 1/' wxWidgets/include/wx/msw/setup.h
           sed -i -r -e 's/wxUSE_WEBVIEW_EDGE +0/wxUSE_WEBVIEW_EDGE 1/' wxWidgets/include/wx/msw/setup.h
+          
       - name: Install WebView2
         if: steps.wxwidgets-cache.outputs.cache-hit != 'true'
         shell: cmd
@@ -87,12 +83,14 @@ jobs:
 #          path: otp          
           
       - name: Download source archive
+        shell: bash
         run: |
           git clone https://github.com/erlang/otp
           cd otp
           git checkout maint-24
           
       - name: Compile Erlang
+        shell: bash
         run: |
           mkdir -p /mnt/c/opt/local64/pgm/
           cp -R wxWidgets /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}
@@ -203,11 +201,15 @@ jobs:
         $env:Path = $env:ADD_PATH + $env:Path
         C:\mozilla-build\bin\mozmake.exe
         C:\mozilla-build\bin\mozmake.exe install
-        tar -cvjf ..\..\..\..\vcpkgmozjs.tar.xz C:\vcpkg
+
+        
+    - name: package
+      shell: bash
+      run: |        
+        tar cvjf vcpkgmozjs.tar.xz /c/vcpkg
         
     - name: Release
       uses: softprops/action-gh-release@v1
       with:
         files: |
             vcpkgmozjs.tar.xz
-
