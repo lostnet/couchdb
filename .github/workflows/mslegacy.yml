@@ -17,14 +17,21 @@ jobs:
   msys:
     runs-on: windows-2016
     steps:
+      - name: find things
+        shell: bash
+        continue-on-error: true
+        run: |
+          find /c/msys64 -name pacman\* -print
+          find /c/msys64 -name bash\* -print
+
       - name: update
         shell: cmd
         run: |
-          C:\msys64\bin\pacman -Syu
-          C:\msys64\bin\pacman -Su
+          C:\msys64\bin\bask -c pacman -Syu
+          C:\msys64\bin\bash -c pacman -Su
       - name: install icu
         shell: powershell
-        run: C:\msys64\bin\pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel
+        run: C:\msys64\bin\bash -c pacman -S --needed base-devel mingw-w64-x86_64-toolchain icu-devel
       - name: find things
         shell: bash
         continue-on-error: true
