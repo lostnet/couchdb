@@ -21,13 +21,15 @@ jobs:
   
   erlang:
     runs-on: windows-latest
+    defaults:
+      run:
+        shell: wsl-bash {0}
     steps:
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
           
       - name: Install WSL dependencies
-        shell: bash
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
         
       - name: Install openssl
@@ -44,7 +46,6 @@ jobs:
 
       # actions/cache on Windows sometimes does not set cache-hit even though there was one. Setting it manually.
       - name: Set wxWidgets cache
-        shell: bash
         id: wxwidgets-cache
         run: |
           if [ -d wxWidgets ]; then
@@ -54,7 +55,6 @@ jobs:
           fi
       - name: Download wxWidgets
         if: steps.wxwidgets-cache.outputs.cache-hit != 'true'
-        shell: bash
         run: |
           wget https://github.com/wxWidgets/wxWidgets/releases/download/v${{ env.WXWIDGETS_VERSION }}/wxWidgets-${{ env.WXWIDGETS_VERSION }}.zip
           unzip wxWidgets-${{ env.WXWIDGETS_VERSION }}.zip -d wxWidgets
@@ -83,14 +83,12 @@ jobs:
 #          path: otp          
           
       - name: Download source archive
-        shell: bash
         run: |
           git clone https://github.com/erlang/otp
           cd otp
           git checkout maint-24
           
       - name: Compile Erlang
-        shell: bash
         run: |
           mkdir -p /mnt/c/opt/local64/pgm/
           cp -R wxWidgets /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}
@@ -192,7 +190,7 @@ jobs:
         import os
         env = os.environ.copy()
         env['PATH'] = env['ADD_PATH']+env['PATH']
-        subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/vcpkg/installed/x64-windows"], env=env)
+        subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--enable-shared-js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/vcpkg/installed/x64-windows"], env=env)
 
     - name: make
       working-directory: gecko-dev\js\src\build_OPT.OBJ
