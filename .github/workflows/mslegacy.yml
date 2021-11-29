@@ -109,10 +109,10 @@ jobs:
           cp /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}/3rdparty/webview2/runtimes/win-x64/native/WebView2Loader.dll $ERL_TOP/release/win32/erts-*/bin/
           ./otp_build installer_win32
           ./release/win32/otp_win64_*.exe /S
+          cp ./release/win32/otp_win64_*.exe ..
           
       - name: Release
         uses: softprops/action-gh-release@v1
-        working_directory: otp\release\win32
         with:
           files: |
             otp_win64_*.exe          
