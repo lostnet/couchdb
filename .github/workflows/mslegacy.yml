@@ -23,7 +23,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        otp-version: ["23", "24"]
+        otp-version: ["24"]
     defaults:
       run:
         shell: wsl-bash {0}
