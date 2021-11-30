@@ -205,7 +205,7 @@ jobs:
     - name: package
       shell: bash
       run: |        
-        tar cvjf vcpkgmozjs${{matrix.mozjs-version}}.tar.xz /c/vcpkg
+        tar cvJf vcpkgmozjs${{matrix.mozjs-version}}.tar.xz /c/vcpkg
         
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -213,3 +213,56 @@ jobs:
       with:
         files: |
             vcpkgmozjs${{matrix.mozjs-version}}.tar.xz
+
+  couchdb:
+    needs: [ mozjs, erlang ]
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: wsl-bash {0}
+    steps:
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          
+      - name: Install WSL dependencies
+        run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
+
+      - name: download artifacts
+        uses: actions/download-artifact@v2
+        with:
+          name: ${{ github.ref }}
+      - name: setup moz/icu again
+        working-directory: C:\
+        run: |
+          tar xvJf ${{ github.workspace }}/vcpkgmozjs78.tar.xz
+      - name: setup erlang
+        shell: bash
+        run: |
+          tar xvJf ${{ github.workspace }}/otp-24.tar.xz
+      - name: setup erlang
+        shell: powershell
+        run: |
+          otp_win64_*.exe /S
+
+      - name: checkout couchdb
+        shell: bash
+        run: |
+          git clone https://github.com/apache/couchdb
+          cd couchdb
+          git checkout "3.x"
+
+      - name: build couchdb
+        shell: powershell
+        run: |
+          cd couchdb
+          &.\configure.ps1 -SpiderMonkeyVersion 60
+          make -f Makefile.win
+
+      - name: check couchdb
+        shell: powershell
+        run: |
+          cd couchdb
+          make -f Makefile.win check
+
+
