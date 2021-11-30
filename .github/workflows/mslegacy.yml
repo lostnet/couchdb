@@ -205,7 +205,7 @@ jobs:
     - name: package
       shell: bash
       run: |        
-        tar cvJf vcpkgmozjs${{matrix.mozjs-version}}.tar.xz /c/vcpkg
+        tar cvJf vcpkgmozjs${{matrix.mozjs-version}}.tar.xz /c/vcpkg/installed/x64-windows
         
     - name: Release
       uses: softprops/action-gh-release@v1
@@ -231,11 +231,11 @@ jobs:
       - name: download artifacts
         uses: actions/download-artifact@v2
         with:
-          name: ${{ github.ref }}
+          name: msdeps2
       - name: setup moz/icu again
         shell: bash
         run: |
-          cd /mnt
+          cd /mnt || cd /
           tar xvJf ${{ github.workspace }}/vcpkgmozjs78.tar.xz
       - name: setup erlang
         shell: bash
