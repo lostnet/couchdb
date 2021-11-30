@@ -110,10 +110,10 @@ jobs:
           ./release/win32/otp_win64_*.exe /S
           tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz ./release/win32/otp_win64_*.exe
           
-    - name: Archive otp
-      uses: actions/upload-artifact@v2
-      with:
-        name: otp-${{ matrix.otp-version }}.tar.xz
+      - name: Archive otp
+        uses: actions/upload-artifact@v2
+        with:
+          name: otp-${{ matrix.otp-version }}.tar.xz
         path: otp-${{ matrix.otp-version }}.tar.xz
 
       - name: Release
