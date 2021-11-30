@@ -241,7 +241,8 @@ jobs:
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
 
       - name: download artifacts
-        id: mozjs
+        id: mozjsd
+        shell: powershell
         outputs:
           download-path:
             description: local path
@@ -250,7 +251,8 @@ jobs:
           Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/vcpkgmozjs78.tar.xz
 
       - name: download artifacts
-        id: otp
+        id: otpd
+        shell: powershell
         outputs:
           download-path:
             description: local path
@@ -262,12 +264,12 @@ jobs:
         shell: bash
         run: |
           cd /mnt || cd /
-          tar xvJf ${{ steps.mozjs.outputs.download-path }}
+          tar xvJf ${{ steps.mozjsd.outputs.download-path }}
 
       - name: setup erlang
         shell: bash
         run: |
-          tar xvJf ${{ steps.otp.outputs.download-path }}
+          tar xvJf ${{ steps.otpd.outputs.download-path }}
 
       - name: setup erlang
         shell: powershell
