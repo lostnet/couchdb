@@ -252,8 +252,7 @@ jobs:
 
       - name: setup icu and mozjs again
         run: |
-          cd /mnt || cd /
-          tar xvJf ${{ github.workspace }}/vcpkgmozjs78.tar.xz
+          cat vcpkgmozjs78.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
       - name: setup erlang
         run: |
