@@ -108,7 +108,7 @@ jobs:
           cp /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}/3rdparty/webview2/runtimes/win-x64/native/WebView2Loader.dll $ERL_TOP/release/win32/erts-*/bin/
           ./otp_build installer_win32
           ./release/win32/otp_win64_*.exe /S
-          tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz ./release/win32/otp_win64_*.exe
+          tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz -C ./release/win32/ otp_win64_*.exe
           
       - name: Archive otp
         uses: actions/upload-artifact@v2
@@ -229,6 +229,7 @@ jobs:
 
   coucholddeps:
     runs-on: windows-latest
+    needs: [ erlang ]
     defaults:
       run:
         shell: wsl-bash {0}
@@ -248,7 +249,7 @@ jobs:
       - name: download otp artifacts
         shell: powershell
         run: |
-          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/otp-24.tar.xz
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps4/otp-24.tar.xz
 
       - name: setup icu and mozjs again
         run: |
