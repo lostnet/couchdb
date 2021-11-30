@@ -311,12 +311,14 @@ jobs:
       - name: setup moz/icu again
         shell: bash
         run: |
+          echo ${{ steps.mozjs.outputs.download-path }}
           cd /mnt || cd /
           tar xvJf ${{ steps.mozjs.outputs.download-path }}
 
       - name: setup erlang
         shell: bash
         run: |
+          echo ${{ steps.otp.outputs.download-path }}
           tar xvJf ${{ steps.otp.outputs.download-path }}
 
       - name: setup erlang
