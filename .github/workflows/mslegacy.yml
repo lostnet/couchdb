@@ -256,9 +256,9 @@ jobs:
             description: local path
             value: otp-24.tar.xz
         run: |
-        Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/otp-24.tar.xz
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/otp-24.tar.xz
 
-      - name: setup moz/icu again
+      - name: setup icu and mozjs again
         shell: bash
         run: |
           cd /mnt || cd /
