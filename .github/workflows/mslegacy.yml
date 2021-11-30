@@ -265,7 +265,6 @@ jobs:
           otp_win64_*.exe /S
 
       - name: checkout couchdb
-        shell: bash
         run: |
           git clone https://github.com/apache/couchdb
           cd couchdb
