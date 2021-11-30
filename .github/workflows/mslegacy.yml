@@ -110,6 +110,12 @@ jobs:
           ./release/win32/otp_win64_*.exe /S
           tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz ./release/win32/otp_win64_*.exe
           
+    - name: Archive otp
+      uses: actions/upload-artifact@v2
+      with:
+        name: otp-${{ matrix.otp-version }}.tar.xz
+        path: otp-${{ matrix.otp-version }}.tar.xz
+
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
@@ -207,12 +213,86 @@ jobs:
       run: |        
         tar cvJf vcpkgmozjs${{matrix.mozjs-version}}.tar.xz /c/vcpkg/installed/x64-windows
         
+    - name: Archive mozjs
+      uses: actions/upload-artifact@v2
+      with:
+        name: vcpkgmozjs${{matrix.mozjs-version}}.tar.xz
+        path: vcpkgmozjs${{matrix.mozjs-version}}.tar.xz
+
     - name: Release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/')
       with:
         files: |
             vcpkgmozjs${{matrix.mozjs-version}}.tar.xz
+
+
+  coucholddeps:
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: wsl-bash {0}
+    steps:
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          
+      - name: Install WSL dependencies
+        run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
+
+      - name: download artifacts
+        id: mozjs
+        outputs:
+          download-path:
+            description: local path
+            value: vcpkgmozjs78.tar.xz
+        run: |
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/vcpkgmozjs78.tar.xz
+
+      - name: download artifacts
+        id: otp
+        outputs:
+          download-path:
+            description: local path
+            value: otp-24.tar.xz
+        run: |
+        Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/otp-24.tar.xz
+
+      - name: setup moz/icu again
+        shell: bash
+        run: |
+          cd /mnt || cd /
+          tar xvJf ${{ steps.mozjs.outputs.download-path }}
+
+      - name: setup erlang
+        shell: bash
+        run: |
+          tar xvJf ${{ steps.otp.outputs.download-path }}
+
+      - name: setup erlang
+        shell: powershell
+        run: |
+          otp_win64_*.exe /S
+
+      - name: checkout couchdb
+        shell: bash
+        run: |
+          git clone https://github.com/apache/couchdb
+          cd couchdb
+          git checkout "3.x"
+
+      - name: build couchdb
+        shell: powershell
+        run: |
+          cd couchdb
+          &.\configure.ps1 -SpiderMonkeyVersion 60
+          make -f Makefile.win
+
+      - name: check couchdb
+        shell: powershell
+        run: |
+          cd couchdb
+          make -f Makefile.win check
 
   couchdb:
     needs: [ mozjs, erlang ]
@@ -229,18 +309,28 @@ jobs:
         run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
 
       - name: download artifacts
+        id: mozjs
         uses: actions/download-artifact@v2
         with:
-          name: msdeps2
+          name: vcpkgmozjs-78.tar.xz
+
+      - name: download artifacts
+        id: otp
+        uses: actions/download-artifact@v2
+        with:
+          name: otp-24.tar.xz
+
       - name: setup moz/icu again
         shell: bash
         run: |
           cd /mnt || cd /
-          tar xvJf ${{ github.workspace }}/vcpkgmozjs78.tar.xz
+          tar xvJf ${{ steps.mozjs.outputs.download-path }}
+
       - name: setup erlang
         shell: bash
         run: |
-          tar xvJf ${{ github.workspace }}/otp-24.tar.xz
+          tar xvJf ${{ steps.otp.outputs.download-path }}
+
       - name: setup erlang
         shell: powershell
         run: |
