@@ -303,9 +303,9 @@ jobs:
         continue-on-error: true
         shell: cmd
         run: |
-          call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\BuildTools\\VC\\Auxiliary\\Build\\vcvars64.bat"
           cd couchdb
-          set PATH=%PATH%;%ERL_PATH%;%ADD_PATH%;
+          set PATH='C:\Program Files\llvm\bin';%PATH%;%ERL_PATH%;%ADD_PATH%;
+          set CC='C:\Program Files\llvm\bin\clang.exe'
           pwsh -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           make -f Makefile.win
 
