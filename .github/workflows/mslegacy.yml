@@ -297,7 +297,7 @@ jobs:
         continue-on-error: true
         run: |
           cd couchdb
-          export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH:$ADD_PATH
+          export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
           export CC=clang.exe
           pwsh -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           make -f Makefile.win
@@ -306,7 +306,7 @@ jobs:
         continue-on-error: true
         run: |
           cd couchdb
-          export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH:$ADD_PATH
+          export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
           export CC=clang.exe
           make -f Makefile.win check
 
