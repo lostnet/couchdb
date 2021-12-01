@@ -282,7 +282,7 @@ jobs:
           ln -s ../Program*Files/llvm llvm
           mkdir bin
           cd bin
-          ln -s ../Program*Files/PowerShell/7/pwsh pwsh
+          ln -s ../../Program*Files/PowerShell/7/pwsh pwsh
 
 
       - name: checkout couchdb
