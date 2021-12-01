@@ -305,7 +305,9 @@ jobs:
           cd couchdb
           export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
           export CC=clang-cl.exe
-          export CFLAGS="/std:c++17"
+          export CFLAGS="/st:c++17 /DCF"
+          export DRV_CFLAGS="/st:c++17 /DDCF"
+          export EXE_CFLAGS="/std:c++17 /DECF"
           export WSLENV=PATH/l:CC
           pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           pwsh.exe -Command "make.exe -f Makefile.win"
