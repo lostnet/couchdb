@@ -7,6 +7,7 @@ env:
   WXWIDGETS_VERSION: 3.1.4
   BUILD_CONFIGURATION: Release  
   ERL_PATH: "C:\\relax\\erl\\bin"
+  MSVC_PATH: "C:\\relax\\msvc\\bin"
   ADD_PATH: "C:\\mozilla-build\\bin;C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;C:\\vcpkg\\installed\\x64-windows\\bin;"
   AUTOCONF: "C:\\mozilla-build\\msys\\local\\bin\\autoconf-2.13"
   NATIVE_WIN32_PYTHON: "C:\\mozilla-build\\python\\python2.7.exe"
@@ -278,6 +279,7 @@ jobs:
           cd relax
           ln -s ../Program*Files/erl*/ erl || ls -ald ../Program*Files/*rl*
           ln -s ../vcpkg vcpkg
+          ln -s ../Program*Files*86*/Microsoft*Visual*Studio/2019/Enter*/VC/Tools/MSVC/15*/ msvc || ls -ald ../Pr*Fil*86*/M*Visual*Studio/2019/En*/VC/Tools/MSVC/*
 
 
       - name: checkout couchdb
@@ -292,18 +294,25 @@ jobs:
           sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
 
       - name: build couchdb
+        continue-on-error: true
         shell: powershell
         run: |
           cd couchdb
-          $env:PATH += ";" + $env:ERL_PATH + ";" + $env:ADD_PATH
+          $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
           &.\configure.ps1 -SpiderMonkeyVersion 78
           make -f Makefile.win
 
       - name: check couchdb
+        continue-on-error: true
         shell: powershell
         run: |
           cd couchdb
           make -f Makefile.win check
+
+      - name: Setup tmate session
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
 
   couchdb:
     needs: [ mozjs, erlang ]
@@ -376,7 +385,7 @@ jobs:
         continue-on-error: true
         shell: powershell
         run: |
-          $env:PATH += ";" + $env:ERL_PATH ";" + $env:ADD_PATH
+          $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
           cd couchdb
           &.\configure.ps1 -SpiderMonkeyVersion 78
           make -f Makefile.win
