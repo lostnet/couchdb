@@ -286,6 +286,7 @@ jobs:
           cd relax
           ln -s ../Program*Files/erl*/ erl || ls -ald ../Program*Files/*rl*
           ln -s ../vcpkg vcpkg
+          ln -s ../Program*Files/llvm llvm
 
 
       - name: checkout couchdb
@@ -304,8 +305,8 @@ jobs:
         shell: cmd
         run: |
           cd couchdb
-          set PATH='C:\Program Files\llvm\bin';%PATH%;%ERL_PATH%;%ADD_PATH%;
-          set CC='C:\Program Files\llvm\bin\clang.exe'
+          set PATH="C:\\relax\\llvm\\bin";%PATH%;%ERL_PATH%;%ADD_PATH%;
+          set CC="C:\\relax\\llvm\\bin\\clang.exe"
           pwsh -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           make -f Makefile.win
 
