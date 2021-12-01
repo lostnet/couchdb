@@ -299,20 +299,10 @@ jobs:
         run: |
           cd couchdb
           export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
-          export CC=clang.exe
+          export CC=clang-cl.exe
           export WSLENV=PATH/l:CC
           pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           pwsh.exe -Command "make.exe -f Makefile.win"
-
-      - name: build couchdb
-        continue-on-error: true
-        run: |
-          cd couchdb
-          export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
-          export CC=clang.exe
-          export WSLENV=PATH/l:CC
-          /mnt/c/relax/pwsh/pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
-          /mnt/c/relax/pwsh/pwsh.exe -Command "make -f Makefile.win"
 
       - name: check couchdb
         continue-on-error: true
