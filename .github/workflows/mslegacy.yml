@@ -6,7 +6,7 @@ env:
   SOLUTION_FILE_PATH: .
   WXWIDGETS_VERSION: 3.1.4
   BUILD_CONFIGURATION: Release  
-  ERL_PATH: "C:\\erl12.1.5"
+  ERL_PATH: "C:\\Program\ Files\\erl12.1.5"
   ADD_PATH: "C:\\mozilla-build\\bin;C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;C:\\vcpkg\\installed\\x64-windows\\bin;"
   AUTOCONF: "C:\\mozilla-build\\msys\\local\\bin\\autoconf-2.13"
   NATIVE_WIN32_PYTHON: "C:\\mozilla-build\\python\\python2.7.exe"
