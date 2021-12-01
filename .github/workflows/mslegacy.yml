@@ -244,15 +244,17 @@ jobs:
       run:
         shell: wsl-bash {0}
     steps:
-      - uses: Vampire/setup-wsl@v1
-        with:
-          distribution: Ubuntu-20.04
           
       - name: old compiler
+        shell: cmd
         run: |
           choco install visualstudio2017buildtools "--passive --locale en-US"
           choco install visualstudio2017-workload-vctools --package-parameters "--includeRecommended --add Microsoft.VisualStudio.Component.VC.ATLMFC"
           choco install visualstudio2017-workload-nativedesktop
+
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
 
       - name: download moz artifacts
         shell: powershell
