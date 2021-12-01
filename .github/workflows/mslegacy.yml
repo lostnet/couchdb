@@ -6,7 +6,7 @@ env:
   SOLUTION_FILE_PATH: .
   WXWIDGETS_VERSION: 3.1.4
   BUILD_CONFIGURATION: Release  
-  ERL_PATH: "C:\\relax\\erl12.1.5\\bin"
+  ERL_PATH: "C:\\relax\\erl\\bin"
   ADD_PATH: "C:\\mozilla-build\\bin;C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;C:\\vcpkg\\installed\\x64-windows\\bin;"
   AUTOCONF: "C:\\mozilla-build\\msys\\local\\bin\\autoconf-2.13"
   NATIVE_WIN32_PYTHON: "C:\\mozilla-build\\python\\python2.7.exe"
@@ -97,7 +97,7 @@ jobs:
           mkdir -p /mnt/c/opt/local64/pgm/
           cp -R wxWidgets /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}
 
-      - name: configure erlang
+      - name: configure and compile erlang
         run: |
           cd otp
           export ERL_TOP=`pwd`
@@ -105,13 +105,6 @@ jobs:
           export ERLC_USE_SERVER=true
           eval `./otp_build env_win32 x64`
           ./otp_build configure
-
-      - name: compile erlang
-        run: |
-          cd otp
-          export ERL_TOP=`pwd`
-          export MAKEFLAGS=-j4
-          export ERLC_USE_SERVER=true
           if cat erts/CONF_INFO || cat lib/*/CONF_INFO || cat lib/*/SKIP || cat lib/SKIP-APPLICATIONS; then exit 1; fi
           ./otp_build boot -a
           ./otp_build release -a
@@ -278,13 +271,12 @@ jobs:
           ./otp_win64_*.exe /S
 
       - name: setup relax
-        shell: bash
         run: |
           cd /mnt || cd /
           cd c
           mkdir -p relax
           cd relax
-          ln -s '../Program Files/erl12.1.5/' erl12.1.5
+          ln -s ../Program*Files/erl*/ erl || ls -ald ../Program*Files/*rl*
           ln -s ../vcpkg vcpkg
 
 
@@ -354,13 +346,12 @@ jobs:
           ./otp_win64_*.exe /S
 
       - name: setup relax
-        shell: bash
         run: |
           cd /mnt || cd /
           cd c
           mkdir -p relax
           cd relax
-          ln -s '../Program Files/erl12.1.5/' erl12.1.5
+          ln -s ../Program*Files/erl*/ erl || ls -ald ../Program*Files/*rl*
           ln -s ../vcpkg vcpkg
 
       - name: checkout couchdb
