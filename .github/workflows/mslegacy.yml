@@ -299,11 +299,6 @@ jobs:
         run: |
           sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
 
-      - name: Set up Visual Studio shell
-        uses: egor-tensin/vs-shell@v2
-        with:
-          arch: x64  
-
       - name: build couchdb
         continue-on-error: true
         shell: cmd
@@ -311,7 +306,7 @@ jobs:
           call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\Auxiliary\\Build\\vcvars64.bat"
           cd couchdb
           set PATH=%PATH%;%ERL_PATH%;%ADD_PATH%;
-          pwsh -Command &.\configure.ps1 -SpiderMonkeyVersion 78
+          pwsh -Command ". configure.ps1 -SpiderMonkeyVersion 78"
           make -f Makefile.win
 
       - name: check couchdb
