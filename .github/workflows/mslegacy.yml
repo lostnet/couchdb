@@ -304,6 +304,11 @@ jobs:
           pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           pwsh.exe -Command "make.exe -f Makefile.win"
 
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64  
+
       - name: check couchdb
         continue-on-error: true
         run: |
