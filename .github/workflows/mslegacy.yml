@@ -294,6 +294,11 @@ jobs:
         run: |
           sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
 
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64  
+
       - name: build couchdb
         continue-on-error: true
         run: |
@@ -303,11 +308,6 @@ jobs:
           export WSLENV=PATH/l:CC
           pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           pwsh.exe -Command "make.exe -f Makefile.win"
-
-      - name: Set up Visual Studio shell
-        uses: egor-tensin/vs-shell@v2
-        with:
-          arch: x64  
 
       - name: check couchdb
         continue-on-error: true
