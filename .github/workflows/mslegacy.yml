@@ -286,6 +286,11 @@ jobs:
           cd couchdb
           git checkout "3.x"
 
+      - name: patch couchdb rebar for moz78
+        continue-on-error: true
+        run: |
+          sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
+
       - name: build couchdb
         shell: powershell
         run: |
@@ -361,6 +366,11 @@ jobs:
           git clone https://github.com/apache/couchdb
           cd couchdb
           git checkout "3.x"
+
+      - name: patch couchdb rebar for moz78
+        continue-on-error: true
+        run: |
+          sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
 
       - name: build couchdb
         continue-on-error: true
