@@ -293,12 +293,16 @@ jobs:
         run: |
           sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
 
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64  
+
       - name: build couchdb
         continue-on-error: true
         shell: powershell
         run: |
           cd couchdb
-          call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
           $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
           &.\configure.ps1 -SpiderMonkeyVersion 78
           make -f Makefile.win
@@ -383,11 +387,16 @@ jobs:
         run: |
           sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
 
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64  
+
       - name: build couchdb
         continue-on-error: true
         shell: powershell
         run: |
-          call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
           $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
           cd couchdb
           &.\configure.ps1 -SpiderMonkeyVersion 78
