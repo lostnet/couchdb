@@ -246,8 +246,6 @@ jobs:
         with:
           distribution: Ubuntu-20.04
           
-      - name: Install WSL dependencies
-        run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
 
       - name: download moz artifacts
         shell: powershell
@@ -279,7 +277,6 @@ jobs:
           cd relax
           ln -s ../Program*Files/erl*/ erl || ls -ald ../Program*Files/*rl*
           ln -s ../vcpkg vcpkg
-          ln -s ../Program*Files*86*/Microsoft*Visual*Studio/2019/Enter*/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/ msvc || ls -ald ../Pr*Fil*86*/M*Visual*Studio/2019/En*/VC/Tools/MSVC/*
 
 
       - name: checkout couchdb
