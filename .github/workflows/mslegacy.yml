@@ -298,6 +298,7 @@ jobs:
         shell: powershell
         run: |
           cd couchdb
+          call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
           $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
           &.\configure.ps1 -SpiderMonkeyVersion 78
           make -f Makefile.win
@@ -367,6 +368,7 @@ jobs:
           cd relax
           ln -s ../Program*Files/erl*/ erl || ls -ald ../Program*Files/*rl*
           ln -s ../vcpkg vcpkg
+          ln -s ../Program*Files*86*/Microsoft*Visual*Studio/2019/Enter*/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/ msvc || ls -ald ../Pr*Fil*86*/M*Visual*Studio/2019/En*/VC/Tools/MSVC/*
 
       - name: checkout couchdb
         continue-on-error: true
@@ -385,6 +387,7 @@ jobs:
         continue-on-error: true
         shell: powershell
         run: |
+          call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
           $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
           cd couchdb
           &.\configure.ps1 -SpiderMonkeyVersion 78
