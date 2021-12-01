@@ -245,13 +245,6 @@ jobs:
         shell: wsl-bash {0}
     steps:
           
-      - name: old compiler
-        shell: cmd
-        run: |
-          choco install visualstudio2017buildtools "--passive --locale en-US"
-          choco install visualstudio2017-workload-vctools --package-parameters "--includeRecommended --add Microsoft.VisualStudio.Component.VC.ATLMFC"
-          choco install visualstudio2017-workload-nativedesktop
-
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
@@ -302,19 +295,19 @@ jobs:
 
       - name: build couchdb
         continue-on-error: true
-        shell: cmd
         run: |
           cd couchdb
-          set PATH="C:\\relax\\llvm\\bin";%PATH%;%ERL_PATH%;%ADD_PATH%;
-          set CC="C:\\relax\\llvm\\bin\\clang.exe"
+          export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH:$ADD_PATH
+          export CC=clang.exe
           pwsh -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           make -f Makefile.win
 
       - name: check couchdb
         continue-on-error: true
-        shell: powershell
         run: |
           cd couchdb
+          export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH:$ADD_PATH
+          export CC=clang.exe
           make -f Makefile.win check
 
       - name: Setup tmate session
