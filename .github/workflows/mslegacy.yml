@@ -108,7 +108,7 @@ jobs:
           cp /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}/3rdparty/webview2/runtimes/win-x64/native/WebView2Loader.dll $ERL_TOP/release/win32/erts-*/bin/
           ./otp_build installer_win32
           ./release/win32/otp_win64_*.exe /S
-          tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz -C ./release/win32/ otp_win64_*.exe
+          tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz -C ./release/win32/ .
           
       - name: Archive otp
         uses: actions/upload-artifact@v2
@@ -299,17 +299,20 @@ jobs:
 
       - name: download artifacts
         id: mozjs
+        continue-on-error: true
         uses: actions/download-artifact@v2
         with:
-          name: vcpkgmozjs-78.tar.xz
+          name: vcpkgmozjs78.tar.xz
 
       - name: download artifacts
+        continue-on-error: true
         id: otp
         uses: actions/download-artifact@v2
         with:
           name: otp-24.tar.xz
 
       - name: setup moz/icu again
+        continue-on-error: true
         shell: bash
         run: |
           echo ${{ steps.mozjs.outputs.download-path }}
@@ -317,17 +320,20 @@ jobs:
           tar xvJf ${{ steps.mozjs.outputs.download-path }}
 
       - name: setup erlang
+        continue-on-error: true
         shell: bash
         run: |
           echo ${{ steps.otp.outputs.download-path }}
           tar xvJf ${{ steps.otp.outputs.download-path }}
 
       - name: setup erlang
+        continue-on-error: true
         shell: powershell
         run: |
           otp_win64_*.exe /S
 
       - name: checkout couchdb
+        continue-on-error: true
         shell: bash
         run: |
           git clone https://github.com/apache/couchdb
@@ -335,6 +341,7 @@ jobs:
           git checkout "3.x"
 
       - name: build couchdb
+        continue-on-error: true
         shell: powershell
         run: |
           cd couchdb
@@ -342,6 +349,7 @@ jobs:
           make -f Makefile.win
 
       - name: check couchdb
+        continue-on-error: true
         shell: powershell
         run: |
           cd couchdb
