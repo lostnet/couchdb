@@ -23,6 +23,7 @@ jobs:
   
   erlang:
     runs-on: windows-latest
+    if: false
     strategy:
       matrix:
         otp-version: ["24"]
@@ -133,6 +134,7 @@ jobs:
             otp-${{ matrix.otp-version }}.tar.xz
 
   mozjs:
+    if: false
     strategy:
       matrix:
         mozjs-version: ["78", "91"]
@@ -246,6 +248,11 @@ jobs:
         with:
           distribution: Ubuntu-20.04
           
+      - name: old compiler
+        run: |
+          choco install visualstudio2017buildtools "--passive --locale en-US"
+          choco install visualstudio2017-workload-vctools --package-parameters "--includeRecommended --add Microsoft.VisualStudio.Component.VC.ATLMFC"
+          choco install visualstudio2017-workload-nativedesktop
 
       - name: download moz artifacts
         shell: powershell
@@ -297,11 +304,12 @@ jobs:
 
       - name: build couchdb
         continue-on-error: true
-        shell: powershell
+        shell: cmd
         run: |
+          call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2017\\Community\\VC\Auxiliary\\Build\\vcvars64.bat"
           cd couchdb
-          $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
-          &.\configure.ps1 -SpiderMonkeyVersion 78
+          set PATH=%PATH%;%ERL_PATH%;%ADD_PATH%;
+          pwsh -Command &.\configure.ps1 -SpiderMonkeyVersion 78
           make -f Makefile.win
 
       - name: check couchdb
