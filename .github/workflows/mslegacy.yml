@@ -269,7 +269,7 @@ jobs:
         run: |
           cat vcpkgmozjs78.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
-      - name: setup erlang
+      - name: unarch erlang
         run: |
           tar xvJf otp-24.tar.xz
 
@@ -280,7 +280,7 @@ jobs:
       - name: setup relax
         shell: bash
         run: |
-          cd /mnt || /
+          cd /mnt || cd /
           cd c
           mkdir -p relax
           cd relax
@@ -342,7 +342,7 @@ jobs:
         run: |
           cat vcpkgmozjs78.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
-      - name: setup erlang
+      - name: unarch erlang
         continue-on-error: true
         shell: bash
         run: |
@@ -356,7 +356,7 @@ jobs:
       - name: setup relax
         shell: bash
         run: |
-          cd /mnt || /
+          cd /mnt || cd /
           cd c
           mkdir -p relax
           cd relax
