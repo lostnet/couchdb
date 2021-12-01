@@ -91,24 +91,39 @@ jobs:
           cd otp
           git checkout maint-${{ matrix.otp-version }}
           
-      - name: Compile Erlang
+      - name: setup wxwidgets
         run: |
           mkdir -p /mnt/c/opt/local64/pgm/
           cp -R wxWidgets /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}
-          # tar -xzf ./otp_src.tar.gz
+
+      - name: configure erlang
+        run: |
           cd otp
           export ERL_TOP=`pwd`
           export MAKEFLAGS=-j4
           export ERLC_USE_SERVER=true
           eval `./otp_build env_win32 x64`
           ./otp_build configure
+
+      - name: compile erlang
+        run: |
+          cd otp
+          export ERL_TOP=`pwd`
+          export MAKEFLAGS=-j4
+          export ERLC_USE_SERVER=true
+          eval `./otp_build env_win32 x64`
           if cat erts/CONF_INFO || cat lib/*/CONF_INFO || cat lib/*/SKIP || cat lib/SKIP-APPLICATIONS; then exit 1; fi
           ./otp_build boot -a
           ./otp_build release -a
           cp /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}/3rdparty/webview2/runtimes/win-x64/native/WebView2Loader.dll $ERL_TOP/release/win32/erts-*/bin/
           ./otp_build installer_win32
+
+      - name: happy erlang
+        run: |
+          cd otp
           ./release/win32/otp_win64_*.exe /S
-          tar -cvJf ../otp-${{ matrix.otp-version }}.tar.xz -C ./release/win32/ .
+          cd release/win32
+          tar -cvJf ../../../otp-${{ matrix.otp-version }}.tar.xz otp_win64_*.exe
           
       - name: Archive otp
         uses: actions/upload-artifact@v2
@@ -229,7 +244,6 @@ jobs:
 
   coucholddeps:
     runs-on: windows-latest
-    needs: [ erlang ]
     defaults:
       run:
         shell: wsl-bash {0}
@@ -260,9 +274,8 @@ jobs:
           tar xvJf otp-24.tar.xz
 
       - name: setup erlang
-        shell: powershell
         run: |
-          otp_win64_*.exe /S
+          ./otp_win64_*.exe /S
 
       - name: checkout couchdb
         run: |
@@ -328,9 +341,8 @@ jobs:
 
       - name: setup erlang
         continue-on-error: true
-        shell: powershell
         run: |
-          otp_win64_*.exe /S
+          ./otp_win64_*.exe /S
 
       - name: checkout couchdb
         continue-on-error: true
