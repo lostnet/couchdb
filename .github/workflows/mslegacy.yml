@@ -134,7 +134,7 @@ jobs:
             otp-${{ matrix.otp-version }}.tar.xz
 
   mozjs:
-    if: false
+    if: true
     strategy:
       matrix:
         mozjs-version: ["78", "91"]
@@ -216,6 +216,7 @@ jobs:
       shell: powershell
       run: |
         copy gecko-dev\js\src\build_OPT.OBJ\js\src\build\*.pdb C:\vcpkg\installed\x64-windows\bin
+        copy gecko-dev\js\src\build_OPT.OBJ\js\src\build\*.lib C:\vcpkg\installed\x64-windows\bin
         copy gecko-dev\js\src\build_OPT.OBJ\dist\bin\*.dll C:\vcpkg\installed\x64-windows\bin
         copy gecko-dev\js\src\build_OPT.OBJ\dist\include\* C:\vcpkg\installed\x64-windows\include -Recurse -ErrorAction SilentlyContinue
         
@@ -240,6 +241,7 @@ jobs:
 
   coucholddeps:
     runs-on: windows-latest
+    if: false
     defaults:
       run:
         shell: wsl-bash {0}
