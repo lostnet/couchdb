@@ -311,7 +311,7 @@ jobs:
           export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
           export CC=clang-cl.exe
           export WSLENV=PATH/l:CC
-          pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 91 -DisableFauxton"
+          pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 91 -DisableFauxton -DisableDocs"
           pwsh.exe -Command "make.exe -f Makefile.win"
 
       - name: check couchdb
