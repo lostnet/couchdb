@@ -293,6 +293,7 @@ jobs:
         continue-on-error: true
         run: |
           sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"mozjs-60.lib"@"/std:c++17 mozjs-78.lib"@' couchdb/src/couch/rebar.config.script
 
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
@@ -305,11 +306,7 @@ jobs:
           cd couchdb
           export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
           export CC=clang-cl.exe
-          export CFLAGS="/st:c++17 /DCF"
-          export CXXFLAGS="/st:c++17 /DCXF"
-          export DRV_CFLAGS="/st:c++17 /DDCF"
-          export EXE_CFLAGS="/std:c++17 /DECF"
-          export WSLENV=PATH/l:CC:CXXFLAGS:DRV_FLAGS:EXE_FLAGS
+          export WSLENV=PATH/l:CC
           pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
           pwsh.exe -Command "make.exe -f Makefile.win"
 
