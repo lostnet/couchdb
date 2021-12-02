@@ -267,6 +267,11 @@ jobs:
         run: |
           Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps4/otp-24.tar.xz
 
+      - name: download Elixir
+        shell: powershell
+        run: |
+          Start-BitsTransfer -Source https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+
       - name: setup icu and mozjs again
         run: |
           cat vcpkgmozjs91.tar.xz | (cd /mnt || cd /; tar xvJf -)
@@ -278,6 +283,13 @@ jobs:
       - name: setup erlang
         run: |
           ./otp_win64_*.exe /S
+
+      - name: setup elixir
+        run: |
+          mv Precompiled.zip /mnt/c/Program*Files/erl*/
+          cd /mnt/c/Program*Files/erl*/
+          unzip Precompiled.zip
+          
 
       - name: setup relax
         run: |
@@ -335,7 +347,7 @@ jobs:
         continue-on-error: true
         run: |
           cd couchdb-glazier/bin
-          $env:VCPKG_BIN="c:\relax\vcpkg\installed\x64_windows\bin"
+          $env:VCPKG_BIN="c:\relax\vcpkg\installed\x64-windows\bin"
           ./build_installer 
           mv apache-couchdb.*gz apache-couchdb.tar.gz
 
