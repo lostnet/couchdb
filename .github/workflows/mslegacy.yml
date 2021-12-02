@@ -352,10 +352,9 @@ jobs:
       - name: bundle
         shell: powershell
         run: |
-          cd couchdb-glazier/bin
           $env:VCPKG_BIN="c:\relax\vcpkg\installed\x64-windows\bin"
           $env:Path="C:\Program Files (x86)\WiX Toolset v3.11\bin;$env:Path"
-          couchdb-glazier/bin/build_installer
+          ./couchdb-glazier/bin/build_installer
           mv apache-couchdb.*msi apache-couchdb.msi
 
       - name: Release
