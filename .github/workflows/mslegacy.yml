@@ -23,7 +23,6 @@ jobs:
   
   erlang:
     runs-on: windows-latest
-    if: false
     strategy:
       matrix:
         otp-version: ["24"]
@@ -134,7 +133,6 @@ jobs:
             otp-${{ matrix.otp-version }}.tar.xz
 
   mozjs:
-    if: false
     strategy:
       matrix:
         mozjs-version: ["78", "91"]
@@ -358,7 +356,162 @@ jobs:
 
       - name: bland name
         run: |
-          mv apache-couchdb.*msi apache-couchdb.msi || find . -type f -name apache-couchdb\*
+          mv apache-couchdb*msi apache-couchdb-old-deps.msi
+
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            apache-couchdb-old-deps.msi
+
+      - name: check couchdb
+        continue-on-error: true
+        timeout-minutes: 15
+        shell: powershell
+        run: |
+          cd couchdb
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
+          $env:CC="clang-cl.exe"
+          make -f Makefile.win check 2>&1 > ../check_results_old_deps.txt
+
+      - name: Release check results
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            check_results_old_deps.txt
+
+      - name: Setup tmate session
+        if: false
+        uses: mxschmitt/action-tmate@v3
+        with:
+          limit-access-to-actor: true
+
+  couchdb:
+    needs: [ mozjs, erlang ]
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: wsl-bash {0}
+    steps:
+      - uses: Vampire/setup-wsl@v1
+        with:
+          distribution: Ubuntu-20.04
+          additional-packages:
+            unzip
+
+      - name: checkout couchdb-glazier
+        run: |
+          git clone https://github.com/apache/couchdb-glazier
+          cd couchdb-glazier
+          git checkout main
+          sed -i -e 's@2017.*14.16.27012@2019\\Enterprise\\VC\\Redist\\MSVC\\14.16.27012@' installer/couchdb.wxs.in
+
+          
+      - name: download artifacts
+        id: mozjs
+        continue-on-error: true
+        uses: actions/download-artifact@v2
+        with:
+          name: vcpkgmozjs91.tar.xz
+
+      - name: download artifacts
+        continue-on-error: true
+        id: otp
+        uses: actions/download-artifact@v2
+        with:
+          name: otp-24.tar.xz
+
+      - name: download Elixir
+        shell: powershell
+        run: |
+          Start-BitsTransfer -Source https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+
+      - name: setup icu and mozjs again
+        run: |
+          cat vcpkgmozjs91.tar.xz | (cd /mnt || cd /; tar xvJf -)
+
+      - name: choco install
+        shell: cmd
+        run: choco install nasm wixtoolset
+
+      - name: unarch erlang
+        run: |
+          tar xvJf otp-24.tar.xz
+
+      - name: setup erlang
+        run: |
+          ./otp_win64_*.exe /S
+
+      - name: setup elixir
+        run: |
+          mv Precompiled.zip /mnt/c/Program*Files/erl*/
+          cd /mnt/c/Program*Files/erl*/
+          unzip Precompiled.zip
+          
+
+      - name: setup relax
+        run: |
+          cd /mnt || cd /
+          cd c
+          mkdir -p relax
+          cd relax
+          ln -s ../Program*Files/erl*/ erl
+          ln -s ../vcpkg vcpkg
+          ln -s ../Program*Files/llvm llvm
+          ln -s ../Program*Files/PowerShell/7 pwsh
+
+
+      - name: checkout couchdb
+        run: |
+          git clone https://github.com/apache/couchdb
+          cd couchdb
+          git checkout "feat/support-sm91-3.x-from-lostnet"
+
+      - name: patch couchdb rebar for moz91
+        run: |
+          sed -i -e 's@SMVsn == "60"@SMVsn == "91"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"mozjs-60.lib"@"/LIBPATH:C:/relax/vcpkg/installed/x64-windows/bin mozjs-91.lib"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"/DXP_WIN"@"/std:c++17 /DXP_WIN"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"icuin.lib icudt.lib icuuc.lib"@"/LIBPATH:C:/relax/vcpkg/installed/x64-windows/bin /LIBPATH:C:/relax/vcpkg/installed/x64-windows/lib icuin.lib icudt.lib icuuc.lib"@' couchdb/src/couch/rebar.config.script
+
+      - name: Set up Visual Studio shell
+        uses: egor-tensin/vs-shell@v2
+        with:
+          arch: x64  
+
+      - name: build couchdb
+        shell: powershell
+        run: |
+          cd couchdb
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
+          echo $env:Path
+          $env:CC="clang-cl.exe"
+          echo $env:CC
+          . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
+          make.exe -f Makefile.win
+
+      - name: build couchdb release
+        shell: powershell
+        run: |
+          cd couchdb
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
+          echo $env:Path
+          $env:CC="clang-cl.exe"
+          echo $env:CC
+          make.exe -f Makefile.win release
+
+      - name: bundle
+        shell: powershell
+        run: |
+          $env:VCPKG_BIN="c:\relax\vcpkg\installed\x64-windows\bin"
+          $env:Path="C:\Program Files (x86)\WiX Toolset v3.11\bin;$env:Path"
+          ./couchdb-glazier/bin/build_installer
+
+      - name: bland name
+        run: |
+          mv apache-couchdb*msi apache-couchdb.msi
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -389,95 +542,3 @@ jobs:
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
-
-  couchdb:
-    needs: [ mozjs, erlang ]
-    runs-on: windows-latest
-    defaults:
-      run:
-        shell: wsl-bash {0}
-    steps:
-      - uses: Vampire/setup-wsl@v1
-        with:
-          distribution: Ubuntu-20.04
-          
-      - name: Install WSL dependencies
-        run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
-
-      - name: download artifacts
-        id: mozjs
-        continue-on-error: true
-        uses: actions/download-artifact@v2
-        with:
-          name: vcpkgmozjs78.tar.xz
-
-      - name: download artifacts
-        continue-on-error: true
-        id: otp
-        uses: actions/download-artifact@v2
-        with:
-          name: otp-24.tar.xz
-
-      - name: setup moz/icu again
-        continue-on-error: true
-        shell: bash
-        run: |
-          cat vcpkgmozjs78.tar.xz | (cd /mnt || cd /; tar xvJf -)
-
-      - name: unarch erlang
-        continue-on-error: true
-        shell: bash
-        run: |
-          tar xvJf otp-24.tar.xz
-
-      - name: setup erlang
-        continue-on-error: true
-        run: |
-          ./otp_win64_*.exe /S
-
-      - name: setup relax
-        run: |
-          cd /mnt || cd /
-          cd c
-          mkdir -p relax
-          cd relax
-          ln -s ../Program*Files/erl*/ erl || ls -ald ../Program*Files/*rl*
-          ln -s ../vcpkg vcpkg
-          ln -s ../Program*Files*86*/Microsoft*Visual*Studio/2019/Enter*/VC/Tools/MSVC/14.29.30133/bin/Hostx64/x64/ msvc || ls -ald ../Pr*Fil*86*/M*Visual*Studio/2019/En*/VC/Tools/MSVC/*
-
-      - name: checkout couchdb
-        continue-on-error: true
-        shell: bash
-        run: |
-          git clone https://github.com/apache/couchdb
-          cd couchdb
-          git checkout "3.x"
-
-      - name: patch couchdb rebar for moz78
-        continue-on-error: true
-        run: |
-          sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
-
-
-      - name: Set up Visual Studio shell
-        uses: egor-tensin/vs-shell@v2
-        with:
-          arch: x64  
-
-      - name: build couchdb
-        continue-on-error: true
-        shell: powershell
-        run: |
-          $env:PATH += ";" + $env:ERL_PATH + ";" + $env:MSVC_PATH + ";" + $env:ADD_PATH
-          cd couchdb
-          &.\configure.ps1 -SpiderMonkeyVersion 78
-          make -f Makefile.win
-
-      - name: check couchdb
-        continue-on-error: true
-        shell: powershell
-        run: |
-          cd couchdb
-          make -f Makefile.win check
-
-
