@@ -252,7 +252,7 @@ jobs:
       - name: download moz artifacts
         shell: powershell
         run: |
-          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/vcpkgmozjs91.tar.xz
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps4/vcpkgmozjs91.tar.xz
 
       - name: download otp artifacts
         shell: powershell
@@ -293,7 +293,7 @@ jobs:
         continue-on-error: true
         run: |
           sed -i -e 's@SMVsn == "60"@SMVsn == "91"@' couchdb/src/couch/rebar.config.script
-          sed -i -e 's@"mozjs-60.lib"@"mozjs-91.lib"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"mozjs-60.lib"@"/LIBPATH:C:/relax/vcpkg/installed/x64-windows/bin mozjs-91.lib"@' couchdb/src/couch/rebar.config.script
           sed -i -e 's@"/DXP_WIN"@"/std:c++17 /DXP_WIN"@' couchdb/src/couch/rebar.config.script
 
       - name: Set up Visual Studio shell
