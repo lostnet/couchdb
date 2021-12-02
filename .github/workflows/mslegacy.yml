@@ -351,24 +351,21 @@ jobs:
 
       - name: bundle
         shell: powershell
-        continue-on-error: true
         run: |
           cd couchdb-glazier/bin
           $env:VCPKG_BIN="c:\relax\vcpkg\installed\x64-windows\bin"
           $env:Path="C:\Program Files (x86)\WiX Toolset v3.11\bin;$env:Path"
-          ./build_installer 
-          mv apache-couchdb.*gz apache-couchdb.tar.gz
+          couchdb-glazier/bin/build_installer
+          mv apache-couchdb.*msi apache-couchdb.msi
 
       - name: Release
-        continue-on-error: true
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            apache-couchdb*.tar.gz
+            apache-couchdb.msi
 
       - name: check couchdb
-        if: false
         continue-on-error: true
         timeout-minutes: 15
         shell: powershell
@@ -376,9 +373,17 @@ jobs:
           cd couchdb
           $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
           $env:CC="clang-cl.exe"
-          make -f Makefile.win check
+          make -f Makefile.win check 2>&1 > ../check_results.txt
+
+      - name: Release check results
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            check_results.txt
 
       - name: Setup tmate session
+        if: false
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
