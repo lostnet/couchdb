@@ -258,6 +258,7 @@ jobs:
           git clone https://github.com/apache/couchdb-glazier
           cd couchdb-glazier
           git checkout main
+          sed -i -e 's@"2017\BuildTools\VC\Redist\MSVC\14.16.27012"@"2019\Enterprise\VC\Redist\MSVC\14.16.27012"@' couchdb-glazier/installer/couchdb.wxs.in
 
       - name: download moz artifacts
         shell: powershell
