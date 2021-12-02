@@ -252,7 +252,7 @@ jobs:
       - name: download moz artifacts
         shell: powershell
         run: |
-          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/vcpkgmozjs78.tar.xz
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps2/vcpkgmozjs91.tar.xz
 
       - name: download otp artifacts
         shell: powershell
@@ -261,7 +261,7 @@ jobs:
 
       - name: setup icu and mozjs again
         run: |
-          cat vcpkgmozjs78.tar.xz | (cd /mnt || cd /; tar xvJf -)
+          cat vcpkgmozjs91.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
       - name: unarch erlang
         run: |
@@ -287,14 +287,14 @@ jobs:
         run: |
           git clone https://github.com/apache/couchdb
           cd couchdb
-          git checkout "3.x"
+          git checkout "feat/support-sm91-3.x-from-lostnet"
 
-      - name: patch couchdb rebar for moz78
+      - name: patch couchdb rebar for moz91
         continue-on-error: true
         run: |
-          sed -i -e 's@SMVsn == "60"@SMVsn == "78"@' couchdb/src/couch/rebar.config.script
-          sed -i -e 's@"mozjs-60.lib"@"mozjs-78.lib"@' couchdb/src/couch/rebar.config.script
-          sed -i -e 's@"/DXP_WIN"@"/std:c++17 /DXP_WIN"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@SMVsn == "60"@SMVsn == "91"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"mozjs-60.lib"@"mozjs-91.lib"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"/DXP_WIN"@"/std:c++20 /DXP_WIN"@' couchdb/src/couch/rebar.config.script
 
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
@@ -308,7 +308,7 @@ jobs:
           export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
           export CC=clang-cl.exe
           export WSLENV=PATH/l:CC
-          pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 78"
+          pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 91"
           pwsh.exe -Command "make.exe -f Makefile.win"
 
       - name: check couchdb
