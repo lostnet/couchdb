@@ -278,6 +278,9 @@ jobs:
         run: |
           cat vcpkgmozjs91.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
+      - name: choco install
+        run: choco install nasm wixtoolset
+
       - name: unarch erlang
         run: |
           tar xvJf otp-24.tar.xz
