@@ -354,6 +354,7 @@ jobs:
         run: |
           cd couchdb-glazier/bin
           $env:VCPKG_BIN="c:\relax\vcpkg\installed\x64-windows\bin"
+          $env:Path="C:\Program Files (x86)\WiX Toolset v3.11\bin;$env:Path"
           ./build_installer 
           mv apache-couchdb.*gz apache-couchdb.tar.gz
 
