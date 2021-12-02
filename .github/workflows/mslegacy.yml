@@ -297,6 +297,7 @@ jobs:
           sed -i -e 's@SMVsn == "60"@SMVsn == "91"@' couchdb/src/couch/rebar.config.script
           sed -i -e 's@"mozjs-60.lib"@"/LIBPATH:C:/relax/vcpkg/installed/x64-windows/bin mozjs-91.lib"@' couchdb/src/couch/rebar.config.script
           sed -i -e 's@"/DXP_WIN"@"/std:c++17 /DXP_WIN"@' couchdb/src/couch/rebar.config.script
+          sed -i -e 's@"icuin.lib icudt.lib icuuc.lib"@"/LIBPATH:C:/relax/vcpkg/installed/x64-windows/bin /LIBPATH:C:/relax/vcpkg/installed/x64-windows/lib icuin.lib icudt.lib icuuc.lib"@' couchdb/src/couch/rebar.config.script
 
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
