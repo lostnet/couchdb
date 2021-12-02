@@ -279,6 +279,7 @@ jobs:
           cat vcpkgmozjs91.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
       - name: choco install
+        shell: cmd
         run: choco install nasm wixtoolset
 
       - name: unarch erlang
