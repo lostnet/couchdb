@@ -309,19 +309,21 @@ jobs:
         shell: powershell
         run: |
           cd couchdb
-          $ENV:PATH="c:\\relax\\llvm\\bin;c:\\relax\\erl\\bin;$ENV:PATH"
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
           echo $env:Path
-          $env:CC="clang.exe"
+          $env:CC="clang-cl.exe"
+          echo $env:CC
           . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
           make.exe -f Makefile.win
 
       - name: check couchdb
         continue-on-error: true
+        timeout-minutes: 15
         shell: powershell
         run: |
           cd couchdb
-          $ENV:PATH="c:\\relax\\llvm\\bin;c:\\relax\\erl\\bin;$ENV:PATH"
-          $env:CC="clang.exe"
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
+          $env:CC="clang-cl.exe"
           make -f Makefile.win check
 
       - name: Setup tmate session
