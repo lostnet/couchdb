@@ -134,7 +134,7 @@ jobs:
             otp-${{ matrix.otp-version }}.tar.xz
 
   mozjs:
-    if: true
+    if: false
     strategy:
       matrix:
         mozjs-version: ["78", "91"]
@@ -241,7 +241,7 @@ jobs:
 
   coucholddeps:
     runs-on: windows-latest
-    if: false
+    if: true
     defaults:
       run:
         shell: wsl-bash {0}
