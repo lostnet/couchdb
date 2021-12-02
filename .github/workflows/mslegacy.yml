@@ -258,7 +258,7 @@ jobs:
           git clone https://github.com/apache/couchdb-glazier
           cd couchdb-glazier
           git checkout main
-          sed -i -e 's@"2017\BuildTools\VC\Redist\MSVC\14.16.27012"@"2019\Enterprise\VC\Redist\MSVC\14.16.27012"@' couchdb-glazier/installer/couchdb.wxs.in
+          sed -i -e 's@"2017(.*)14.16.27012"@"2019\\Enterprise\\VC\\Redist\\MSVC\\14.16.27012"@' couchdb-glazier/installer/couchdb.wxs.in
 
       - name: download moz artifacts
         shell: powershell
@@ -368,6 +368,7 @@ jobs:
             apache-couchdb*.tar.gz
 
       - name: check couchdb
+        if: false
         continue-on-error: true
         timeout-minutes: 15
         shell: powershell
@@ -378,7 +379,6 @@ jobs:
           make -f Makefile.win check
 
       - name: Setup tmate session
-        if: false
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
