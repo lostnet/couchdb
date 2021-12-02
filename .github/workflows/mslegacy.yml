@@ -251,6 +251,12 @@ jobs:
         with:
           distribution: Ubuntu-20.04
 
+      - name: checkout couchdb-glazier
+        run: |
+          git clone https://github.com/apache/couchdb-glazier
+          cd couchdb-glazier
+          git checkout main
+
       - name: download moz artifacts
         shell: powershell
         run: |
@@ -292,7 +298,6 @@ jobs:
           git checkout "feat/support-sm91-3.x-from-lostnet"
 
       - name: patch couchdb rebar for moz91
-        continue-on-error: true
         run: |
           sed -i -e 's@SMVsn == "60"@SMVsn == "91"@' couchdb/src/couch/rebar.config.script
           sed -i -e 's@"mozjs-60.lib"@"/LIBPATH:C:/relax/vcpkg/installed/x64-windows/bin mozjs-91.lib"@' couchdb/src/couch/rebar.config.script
@@ -305,7 +310,6 @@ jobs:
           arch: x64  
 
       - name: build couchdb
-        continue-on-error: true
         shell: powershell
         run: |
           cd couchdb
@@ -315,6 +319,24 @@ jobs:
           echo $env:CC
           . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
           make.exe -f Makefile.win
+
+
+      - name: bundle
+        shell: powershell
+        continue-on-error: true
+        run: |
+          cd couchdb-glazier/bin
+          $env:VCPKG_BIN="c:\relax\vcpkg\installed\x64_windows\bin"
+          ./build_installer 
+          mv apache-couchdb.*gz apache-couchdb.tar.gz
+
+      - name: Release
+        continue-on-error: true
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            apache-couchdb*.tar.gz
 
       - name: check couchdb
         continue-on-error: true
