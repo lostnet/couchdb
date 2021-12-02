@@ -306,22 +306,22 @@ jobs:
 
       - name: build couchdb
         continue-on-error: true
+        shell: powershell
         run: |
           cd couchdb
-          export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
-          export CC=clang-cl.exe
-          export WSLENV=PATH/l:CC
-          pwsh.exe -Command ". .\configure.ps1 -SpiderMonkeyVersion 91 -DisableFauxton -DisableDocs"
-          pwsh.exe -Command "make.exe -f Makefile.win"
+          $env:PATH="c:/relax/llvm/bin;c:/relax/erl/bin"+$env:PATH
+          $env:CC="clang.exe"
+          . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
+          make.exe -f Makefile.win
 
       - name: check couchdb
         continue-on-error: true
+        shell: powershell
         run: |
           cd couchdb
-          export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
-          export CC=clang.exe
-          export WSLENV=PATH/l:CC
-          pwsh.exe -Command "make -f Makefile.win check"
+          $env:PATH="c:/relax/llvm/bin;c:/relax/erl/bin"+$env:PATH
+          $env:CC="clang.exe"
+          make -f Makefile.win check
 
       - name: Setup tmate session
         if: false
