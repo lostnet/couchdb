@@ -318,12 +318,13 @@ jobs:
         continue-on-error: true
         run: |
           cd couchdb
-          export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:/c/relax/pwsh:/mnt/c/relax/pwsh:$PATH
+          export PATH=/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:$PATH
           export CC=clang.exe
           export WSLENV=PATH/l:CC
           pwsh.exe -Command "make -f Makefile.win check"
 
       - name: Setup tmate session
+        if: false
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
