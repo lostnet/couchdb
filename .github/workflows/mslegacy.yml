@@ -320,7 +320,8 @@ jobs:
           cd couchdb
           export PATH=/c/relax/llvm/bin:/c/relax/erl/bin:/mnt/c/relax/llvm/bin:/mnt/c/relax/erl/bin:/c/relax/pwsh:/mnt/c/relax/pwsh:$PATH
           export CC=clang.exe
-          make -f Makefile.win check
+          export WSLENV=PATH/l:CC
+          pwsh.exe -Command "make -f Makefile.win check"
 
       - name: Setup tmate session
         uses: mxschmitt/action-tmate@v3
