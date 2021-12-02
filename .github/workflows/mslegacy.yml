@@ -320,6 +320,15 @@ jobs:
           . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
           make.exe -f Makefile.win
 
+      - name: build couchdb release
+        shell: powershell
+        run: |
+          cd couchdb
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
+          echo $env:Path
+          $env:CC="clang-cl.exe"
+          echo $env:CC
+          make.exe -f Makefile.win release
 
       - name: bundle
         shell: powershell
