@@ -309,7 +309,8 @@ jobs:
         shell: powershell
         run: |
           cd couchdb
-          $env:PATH="c:/relax/llvm/bin;c:/relax/erl/bin"+$env:PATH
+          $ENV:PATH="c:\\relax\\llvm\\bin;c:\\relax\\erl\\bin;$ENV:PATH"
+          echo $env:Path
           $env:CC="clang.exe"
           . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
           make.exe -f Makefile.win
@@ -319,7 +320,7 @@ jobs:
         shell: powershell
         run: |
           cd couchdb
-          $env:PATH="c:/relax/llvm/bin;c:/relax/erl/bin"+$env:PATH
+          $ENV:PATH="c:\\relax\\llvm\\bin;c:\\relax\\erl\\bin;$ENV:PATH"
           $env:CC="clang.exe"
           make -f Makefile.win check
 
