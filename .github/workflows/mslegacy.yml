@@ -136,7 +136,7 @@ jobs:
     strategy:
       matrix:
         mozjs-version: ["78", "91"]
-    runs-on: windows-2016
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
@@ -383,7 +383,7 @@ jobs:
             check_results_old_deps.txt
 
       - name: Setup tmate session
-        if: false
+        if: true
         uses: mxschmitt/action-tmate@v3
         with:
           limit-access-to-actor: true
