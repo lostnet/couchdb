@@ -135,7 +135,7 @@ jobs:
   mozjs:
     strategy:
       matrix:
-        mozjs-version: ["91"]
+        mozjs-version: ["78" "91"]
     runs-on: windows-latest
 
     steps:
@@ -251,6 +251,12 @@ jobs:
           additional-packages:
             unzip
 
+      - name: python for docs
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade sphinx docutils pygments nose hypothesis sphinx_rtd_theme
+
       - name: checkout couchdb-glazier
         run: |
           git clone https://github.com/apache/couchdb-glazier
@@ -334,7 +340,7 @@ jobs:
           echo $env:Path
           $env:CC="clang-cl.exe"
           echo $env:CC
-          . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
+          . ./configure.ps1 -SpiderMonkeyVersion 91
           make.exe -f Makefile.win
 
       - name: build couchdb release
@@ -367,13 +373,13 @@ jobs:
 
       - name: check couchdb
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 8
         shell: powershell
         run: |
           cd couchdb
           $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
           $env:CC="clang-cl.exe"
-          make -f Makefile.win check
+          make -f Makefile.win check | Tee-Object -FilePath "check_results_old_deps.txt"
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
