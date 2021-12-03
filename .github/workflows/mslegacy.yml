@@ -386,7 +386,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            check_results_old_deps.txt
+            couchdb/check_results_old_deps.txt
 
       - name: Setup tmate session
         if: true
