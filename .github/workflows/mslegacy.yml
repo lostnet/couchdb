@@ -135,7 +135,7 @@ jobs:
   mozjs:
     strategy:
       matrix:
-        mozjs-version: ["78" "91"]
+        mozjs-version: ["78", "91"]
     runs-on: windows-latest
 
     steps:
