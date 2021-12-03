@@ -373,7 +373,7 @@ jobs:
           cd couchdb
           $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
           $env:CC="clang-cl.exe"
-          make -f Makefile.win check *> ../check_results_old_deps.txt
+          make -f Makefile.win check
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
@@ -528,7 +528,7 @@ jobs:
           cd couchdb
           $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
           $env:CC="clang-cl.exe"
-          make -f Makefile.win check *> ../check_results.txt
+          make -f Makefile.win check
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
