@@ -135,7 +135,7 @@ jobs:
   mozjs:
     strategy:
       matrix:
-        mozjs-version: ["78", "91"]
+        mozjs-version: ["91"]
     runs-on: windows-latest
 
     steps:
@@ -201,7 +201,7 @@ jobs:
         import os
         env = os.environ.copy()
         env['PATH'] = env['ADD_PATH']+env['PATH']
-        subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--enable-shared-js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-visual-studio-version=2017", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/vcpkg/installed/x64-windows"], env=env)
+        subprocess.run(["python.EXE", "../../../configure.py", "--enable-project=js", "--enable-shared-js", "--disable-ctypes", "--disable-jit", "--disable-jemalloc", "--enable-optimize", "--enable-hardening", "--with-intl-api", "--build-backends=RecursiveMake", "--with-system-icu", "--disable-debug", "--enable-gczeal", "--target=x86_64-pc-mingw32", "--host=x86_64-pc-mingw32", "--prefix=/c/vcpkg/installed/x64-windows"], env=env)
 
     - name: make
       working-directory: gecko-dev\js\src\build_OPT.OBJ
