@@ -239,6 +239,8 @@ jobs:
 
   coucholddeps:
     runs-on: windows-latest
+    matrix:
+      couch-version: ["3", "4"]
     if: true
     defaults:
       run:
@@ -250,6 +252,13 @@ jobs:
           distribution: Ubuntu-20.04
           additional-packages:
             unzip
+
+      - name: get Foundationdb
+        shell: pwsh
+        if: ${{ matrix.couch_version == "4" }}
+        run: |
+          Start-BitsTransfer -Source https://www.foundationdb.org/downloads/6.3.22/windows/installers/foundationdb-6.3.22-x64.msi
+          .\foundationdb-6.3.22-x64.msi /S | Out-Null
 
       - name: python for docs
         shell: pwsh
@@ -314,11 +323,19 @@ jobs:
           ln -s ../Program*Files/PowerShell/7 pwsh
 
 
-      - name: checkout couchdb
+      - name: checkout couchdb3
+        if: ${{ matrix.couch_version == "3" }}
         run: |
           git clone https://github.com/apache/couchdb
           cd couchdb
           git checkout "feat/support-sm91-3.x-from-lostnet"
+
+      - name: checkout couchdb4
+        if: ${{ matrix.couch_version == "4" }}
+        run: |
+          git clone https://github.com/apache/couchdb
+          cd couchdb
+          git checkout "main"
 
       - name: patch couchdb rebar for moz91
         run: |
