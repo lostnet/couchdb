@@ -259,7 +259,7 @@ jobs:
         if: ${{ matrix.couch-version == '4' }}
         run: |
           Start-BitsTransfer -Source https://www.foundationdb.org/downloads/6.2.30/windows/installers/foundationdb-6.2.30-x64.msi
-          .\foundationdb-6.2.30-x64.msi /S | Out-Null
+          .\foundationdb-6.2.30-x64.msi /S
 
       - name: python for docs
         shell: pwsh
