@@ -25,7 +25,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        otp-version: ["24"]
+        otp-version: ['24']
     defaults:
       run:
         shell: wsl-bash {0}
@@ -135,7 +135,7 @@ jobs:
   mozjs:
     strategy:
       matrix:
-        mozjs-version: ["78", "91"]
+        mozjs-version: ['78', '91']
     runs-on: windows-latest
 
     steps:
@@ -241,7 +241,7 @@ jobs:
     runs-on: windows-latest
     strategy:
       matrix:
-        couch-version: ["3", "4"]
+        couch-version: ['3', '4']
     if: true
     defaults:
       run:
@@ -256,7 +256,7 @@ jobs:
 
       - name: get Foundationdb
         shell: pwsh
-        if: ${{ matrix.couch_version == "4" }}
+        if: ${{ matrix.couch-version == '4' }}
         run: |
           Start-BitsTransfer -Source https://www.foundationdb.org/downloads/6.3.22/windows/installers/foundationdb-6.3.22-x64.msi
           .\foundationdb-6.3.22-x64.msi /S | Out-Null
@@ -325,14 +325,14 @@ jobs:
 
 
       - name: checkout couchdb3
-        if: ${{ matrix.couch_version == "3" }}
+        if: ${{ matrix.couch-version == '3' }}
         run: |
           git clone https://github.com/apache/couchdb
           cd couchdb
           git checkout "feat/support-sm91-3.x-from-lostnet"
 
       - name: checkout couchdb4
-        if: ${{ matrix.couch_version == "4" }}
+        if: ${{ matrix.couch-version == '4' }}
         run: |
           git clone https://github.com/apache/couchdb
           cd couchdb
