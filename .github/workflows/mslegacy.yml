@@ -239,8 +239,9 @@ jobs:
 
   coucholddeps:
     runs-on: windows-latest
-    matrix:
-      couch-version: ["3", "4"]
+    strategy:
+      matrix:
+        couch-version: ["3", "4"]
     if: true
     defaults:
       run:
