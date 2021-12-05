@@ -240,7 +240,7 @@ jobs:
   coucholddeps:
     runs-on: windows-latest
     env:
-      fdb-version: '6.2.30'
+      FDB_VERSION: '6.2.30'
     strategy:
       matrix:
         couch-version: ['3', '4']
