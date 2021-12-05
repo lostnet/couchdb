@@ -341,6 +341,7 @@ jobs:
           git clone https://github.com/apache/couchdb
           cd couchdb
           git checkout "main"
+          sed -i -e 's@{tag, "v1.3.4"}@"74a31ce5a14be60b5cd2062da771deff71a06599"' rebar.config.script
 
       - name: patch couchdb rebar for moz91
         run: |
