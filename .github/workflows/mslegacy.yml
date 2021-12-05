@@ -239,6 +239,8 @@ jobs:
 
   coucholddeps:
     runs-on: windows-latest
+    env:
+      fdb-version: '6.2.30'
     strategy:
       matrix:
         couch-version: ['3', '4']
@@ -254,12 +256,14 @@ jobs:
           additional-packages:
             unzip
 
-      - name: get Foundationdb
+      - name: Install FoundationDB (Windows)
         shell: pwsh
         if: ${{ matrix.couch-version == '4' }}
         run: |
-          Start-BitsTransfer -Source https://www.foundationdb.org/downloads/6.2.30/windows/installers/foundationdb-6.2.30-x64.msi
-          .\foundationdb-6.2.30-x64.msi /S
+          Set-PSDebug -Trace 1
+          Invoke-WebRequest -Uri https://www.foundationdb.org/downloads/$env:FDB_VERSION/windows/installers/foundationdb-$env:FDB_VERSION-x64.msi -OutFile foundationdb-$env:FDB_VERSION-x64.msi
+          msiexec /i foundationdb-$env:FDB_VERSION-x64.msi /passive
+          echo "c:/Program Files/foundationdb/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: python for docs
         shell: pwsh
