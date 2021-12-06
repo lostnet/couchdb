@@ -19,6 +19,7 @@
 init() ->
     NumScheds = erlang:system_info(schedulers),
     Dir = code:priv_dir(couch),
+    ?assertEqual(filename:join(Dir, ?MODULE), <<"couch/priv/couch_ejson_compare">>),
     ok = erlang:load_nif(filename:join(Dir, ?MODULE), NumScheds).
 
 % partitioned row comparison
