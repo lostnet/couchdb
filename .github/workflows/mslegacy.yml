@@ -366,6 +366,16 @@ jobs:
           . ./configure.ps1 -SpiderMonkeyVersion 91
           make.exe -f Makefile.win
 
+      - name: check couchdb
+        continue-on-error: true
+        timeout-minutes: 8
+        shell: powershell
+        run: |
+          cd couchdb
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
+          $env:CC="clang-cl.exe"
+          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
+
       - name: build couchdb release
         shell: powershell
         run: |
@@ -393,16 +403,6 @@ jobs:
         with:
           files: |
             apache-couchdb${{matrix.couch-version}}-old-deps.msi
-
-      - name: check couchdb
-        continue-on-error: true
-        timeout-minutes: 8
-        shell: powershell
-        run: |
-          cd couchdb
-          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
-          $env:CC="clang-cl.exe"
-          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
