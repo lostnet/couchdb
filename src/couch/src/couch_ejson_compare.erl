@@ -12,6 +12,8 @@
 
 -module(couch_ejson_compare).
 
+-include_lib("stdlib/include/assert.hrl").
+
 -export([less/2, less_json_ids/2, less_json/2]).
 
 -on_load(init/0).
@@ -19,7 +21,7 @@
 init() ->
     NumScheds = erlang:system_info(schedulers),
     Dir = code:priv_dir(couch),
-    ?assertEqual(filename:join(Dir, ?MODULE), <<"couch/priv/couch_ejson_compare">>),
+    ?assertEqual(<<"couch/priv/couch_ejson_compare">>, filename:join(Dir, ?MODULE)),
     ok = erlang:load_nif(filename:join(Dir, ?MODULE), NumScheds).
 
 % partitioned row comparison
