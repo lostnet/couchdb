@@ -366,19 +366,19 @@ jobs:
           . ./configure.ps1 -SpiderMonkeyVersion 91
           make.exe -f Makefile.win
 
+      - name: raw bundle of couchdb
+        run: |
+          tar cvJf couchdb${{matrix.couch-version}}-old-deps.tar.xz couchdb
+
       - name: check couchdb
         continue-on-error: true
-        timeout-minutes: 8
+        timeout-minutes: 15
         shell: powershell
         run: |
           cd couchdb
           $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH;$ENV:LIB"
           $env:CC="clang-cl.exe"
           make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
-
-      - name: raw bundle of couchdb
-        run: |
-          tar cvJf couchdb${{matrix.couch-version}}-old-deps.tar.xz couchdb
 
       - name: build couchdb release
         shell: powershell
