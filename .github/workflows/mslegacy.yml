@@ -342,7 +342,7 @@ jobs:
 
       - name: raw bundle of couchdb
         run: |
-          tar cvJf couchdb${{matrix.couch-version}}${{JB}}.tar.xz couchdb
+          tar cvJf couchdb${{matrix.couch-version}}${{env.JB}}.tar.xz couchdb
 
       - name: check couchdb
         continue-on-error: true
@@ -352,7 +352,7 @@ jobs:
           cd couchdb
           $ENV:PATH="c:\relax\erl\bin;$ENV:PATH;$ENV:VCPKG_BIN"
           $env:CC="clang-cl.exe"
-          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}${{JB}}.txt"
+          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}${{env.JB}}.txt"
 
       - name: build couchdb release
         shell: powershell
@@ -373,22 +373,22 @@ jobs:
 
       - name: bland name
         run: |
-          mv apache-couchdb*msi apache-couchdb${{matrix.couch-version}}${{JB}}.msi
+          mv apache-couchdb*msi apache-couchdb${{matrix.couch-version}}${{env.JB}}.msi
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            couchdb${{matrix.couch-version}}${{JB}}.tar.xz
-            apache-couchdb${{matrix.couch-version}}${{JB}}.msi
+            couchdb${{matrix.couch-version}}${{env.JB}}.tar.xz
+            apache-couchdb${{matrix.couch-version}}${{env.JB}}.msi
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            couchdb/check_results${{matrix.couch-version}}${{JB}}.txt
+            couchdb/check_results${{matrix.couch-version}}${{env.JB}}.txt
 
       - name: Setup tmate session
         if: false
@@ -517,7 +517,7 @@ jobs:
 
       - name: raw bundle of couchdb
         run: |
-          tar cvJf couchdb${{matrix.couch-version}}${{JB}}.tar.xz couchdb
+          tar cvJf couchdb${{matrix.couch-version}}${{env.JB}}.tar.xz couchdb
 
       - name: check couchdb
         continue-on-error: true
@@ -527,7 +527,7 @@ jobs:
           cd couchdb
           $ENV:PATH="c:\relax\erl\bin;$ENV:PATH;$ENV:VCPKG_BIN"
           $env:CC="clang-cl.exe"
-          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}${{JB}}.txt"
+          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}${{env.JB}}.txt"
 
       - name: build couchdb release
         shell: powershell
@@ -548,22 +548,22 @@ jobs:
 
       - name: bland name
         run: |
-          mv apache-couchdb*msi apache-couchdb${{matrix.couch-version}}${{JB}}.msi
+          mv apache-couchdb*msi apache-couchdb${{matrix.couch-version}}${{env.JB}}.msi
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            couchdb${{matrix.couch-version}}${{JB}}.tar.xz
-            apache-couchdb${{matrix.couch-version}}${{JB}}.msi
+            couchdb${{matrix.couch-version}}${{env.JB}}.tar.xz
+            apache-couchdb${{matrix.couch-version}}${{env.JB}}.msi
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            couchdb/check_results${{matrix.couch-version}}${{JB}}.txt
+            couchdb/check_results${{matrix.couch-version}}${{env.JB}}.txt
 
       - name: Setup tmate session
         if: false
