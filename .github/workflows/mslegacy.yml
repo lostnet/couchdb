@@ -372,7 +372,7 @@ jobs:
 
       - name: check couchdb
         continue-on-error: true
-        timeout-minutes: 15
+        timeout-minutes: 25
         shell: powershell
         run: |
           cd couchdb
