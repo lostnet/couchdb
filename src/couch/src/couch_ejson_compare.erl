@@ -20,7 +20,7 @@
 
 init() ->
     NumScheds = erlang:system_info(schedulers),
-    Dir = code:priv_dir(couch),
+    Dir = code:priv_dir(couchdb),
     ?assertEqual(Dir, ?MODULE),
     ok = erlang:load_nif(filename:join(Dir, ?MODULE), NumScheds).
 
