@@ -16,13 +16,11 @@
 
 -export([less/2, less_json_ids/2, less_json/2]).
 
--include_lib("couch/include/couch_db.hrl").
-
 -on_load(init/0).
 
 init() ->
     NumScheds = erlang:system_info(schedulers),
-    Dir = couch_util:priv_dir(),
+    Dir = code:priv_dir(couch),
     ?assertEqual(Dir, ?MODULE),
     ok = erlang:load_nif(filename:join(Dir, ?MODULE), NumScheds).
 
