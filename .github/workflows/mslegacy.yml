@@ -376,6 +376,13 @@ jobs:
           $env:CC="clang-cl.exe"
           make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
 
+      - name: raw bundle of couchdb
+        continue-on-error: true
+        timeout-minutes: 8
+        shell: powershell
+        run: |
+          tar cvJf couchdb${{matrix.couch-version}}-old-deps.tar.xz couchdb
+
       - name: build couchdb release
         shell: powershell
         run: |
@@ -402,6 +409,7 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
+            couchdb${{matrix.couch-version}}-old-deps.tar.xz
             apache-couchdb${{matrix.couch-version}}-old-deps.msi
 
       - name: Release check results
