@@ -81,12 +81,6 @@ jobs:
           cd wxWidgets\\build\\msw
           call "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\Auxiliary\\Build\\vcvars64.bat"
           nmake TARGET_CPU=amd64 BUILD=release SHARED=0 DIR_SUFFIX_CPU= -f makefile.vc
-# windows git.exe broken on '*' in filenames          
-#      - name: Checkout erlang
-#        uses: actions/checkout@v2
-#        with:
-#          repository: erlang/otp
-#          path: otp          
           
       - name: Download source archive
         run: |
@@ -113,20 +107,20 @@ jobs:
           cp /mnt/c/opt/local64/pgm/wxWidgets-${{ env.WXWIDGETS_VERSION }}/3rdparty/webview2/runtimes/win-x64/native/WebView2Loader.dll $ERL_TOP/release/win32/erts-*/bin/
           ./otp_build installer_win32
 
-      - name: happy erlang
+      - name: check and bundle erlang
         run: |
           cd otp
           ./release/win32/otp_win64_*.exe /S
           cd release/win32
           tar -cvJf ../../../otp-${{ matrix.otp-version }}.tar.xz otp_win64_*.exe
           
-      - name: Archive otp
+      - name: Artifact of otp
         uses: actions/upload-artifact@v2
         with:
           name: otp-${{ matrix.otp-version }}.tar.xz
           path: otp-${{ matrix.otp-version }}.tar.xz
 
-      - name: Release
+      - name: Release of otp
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
@@ -141,15 +135,6 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
-
-    - name: dump env
-      shell: python
-      continue-on-error: true
-      run: |
-        import os
-        env = os.environ.copy()
-        env['PATH'] = 'C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;'+env['PATH']
-        print(env)        
 
     - name: Install deps on windows
       shell: powershell
@@ -174,18 +159,6 @@ jobs:
         vcpkg.exe install icu
         vcpkg.exe integrate install
       
-    - name: autoconf mozjs
-      shell: python
-      working-directory: gecko-dev\js\src
-      continue-on-error: true
-      run: |
-        import subprocess
-        import os
-        env = os.environ.copy()
-        env['PATH'] = 'C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;'+env['PATH']
-        print(env['PATH'])        
-        subprocess.run(["autoconf-2.13"], env=env)
-        
     - name: builddir for mozjs
       working-directory: gecko-dev\js\src
       run: mkdir build_OPT.OBJ
@@ -242,10 +215,10 @@ jobs:
     runs-on: windows-latest
     env:
       FDB_VERSION: '6.2.30'
+      JB: '-old-deps'
     strategy:
       matrix:
         couch-version: ['3', '4']
-    if: true
     defaults:
       run:
         shell: wsl-bash {0}
@@ -298,11 +271,11 @@ jobs:
         run: |
           cat vcpkgmozjs91.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
-      - name: choco install
+      - name: choco install packaging
         shell: cmd
         run: choco install nasm wixtoolset
 
-      - name: unarch erlang
+      - name: unarchive erlang
         run: |
           tar xvJf otp-24.tar.xz
 
@@ -317,7 +290,7 @@ jobs:
           unzip Precompiled.zip
           
 
-      - name: setup relax
+      - name: setup relax directory
         run: |
           cd /mnt || cd /
           cd c
@@ -356,7 +329,7 @@ jobs:
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
         with:
-          arch: x64  
+          arch: x64
 
       - name: build couchdb
         shell: powershell
@@ -369,7 +342,7 @@ jobs:
 
       - name: raw bundle of couchdb
         run: |
-          tar cvJf couchdb${{matrix.couch-version}}-old-deps.tar.xz couchdb
+          tar cvJf couchdb${{matrix.couch-version}}${{JB}}.tar.xz couchdb
 
       - name: check couchdb
         continue-on-error: true
@@ -379,7 +352,7 @@ jobs:
           cd couchdb
           $ENV:PATH="c:\relax\erl\bin;$ENV:PATH;$ENV:VCPKG_BIN"
           $env:CC="clang-cl.exe"
-          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
+          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}${{JB}}.txt"
 
       - name: build couchdb release
         shell: powershell
@@ -400,22 +373,22 @@ jobs:
 
       - name: bland name
         run: |
-          mv apache-couchdb*msi apache-couchdb${{matrix.couch-version}}-old-deps.msi
+          mv apache-couchdb*msi apache-couchdb${{matrix.couch-version}}${{JB}}.msi
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            couchdb${{matrix.couch-version}}-old-deps.tar.xz
-            apache-couchdb${{matrix.couch-version}}-old-deps.msi
+            couchdb${{matrix.couch-version}}${{JB}}.tar.xz
+            apache-couchdb${{matrix.couch-version}}${{JB}}.msi
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            couchdb/check_results${{matrix.couch-version}}_old_deps.txt
+            couchdb/check_results${{matrix.couch-version}}${{JB}}.txt
 
       - name: Setup tmate session
         if: false
@@ -426,6 +399,12 @@ jobs:
   couchdb:
     needs: [ mozjs, erlang ]
     runs-on: windows-latest
+    env:
+      FDB_VERSION: '6.2.30'
+      JB: ''
+    strategy:
+      matrix:
+        couch-version: ['3', '4']
     defaults:
       run:
         shell: wsl-bash {0}
@@ -467,11 +446,11 @@ jobs:
         run: |
           cat vcpkgmozjs91.tar.xz | (cd /mnt || cd /; tar xvJf -)
 
-      - name: choco install
+      - name: choco install packaging
         shell: cmd
         run: choco install nasm wixtoolset
 
-      - name: unarch erlang
+      - name: unarchive erlang
         run: |
           tar xvJf otp-24.tar.xz
 
@@ -486,7 +465,7 @@ jobs:
           unzip Precompiled.zip
           
 
-      - name: setup relax
+      - name: setup relax directory
         run: |
           cd /mnt || cd /
           cd c
@@ -498,11 +477,22 @@ jobs:
           ln -s ../Program*Files/PowerShell/7 pwsh
 
 
-      - name: checkout couchdb
+      - name: checkout couchdb3
+        if: ${{ matrix.couch-version == '3' }}
         run: |
           git clone https://github.com/apache/couchdb
           cd couchdb
           git checkout "feat/support-sm91-3.x-from-lostnet"
+
+      - name: checkout couchdb4
+        if: ${{ matrix.couch-version == '4' }}
+        run: |
+          git clone https://github.com/apache/couchdb
+          cd couchdb
+          git checkout "053595cf9b536801e8bd39dd54f6526f463dfdb9"
+          sed -i -e 's@{tag, "v1.3.4"}@"74a31ce5a14be60b5cd2062da771deff71a06599"@' rebar.config.script
+          sed -i -e 's@1.0.5-1@1.0.9-1@' rebar.config.script
+          sed -i -e 's@{tag, "v1.2.2"}@"74a31ce5a14be60b5cd2062da771deff71a06599"@' src/ebtree/rebar.config
 
       - name: patch couchdb rebar for moz91
         run: |
@@ -514,7 +504,7 @@ jobs:
       - name: Set up Visual Studio shell
         uses: egor-tensin/vs-shell@v2
         with:
-          arch: x64  
+          arch: x64
 
       - name: build couchdb
         shell: powershell
@@ -522,10 +512,22 @@ jobs:
           cd couchdb
           $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
           echo $env:Path
-          $env:CC="clang-cl.exe"
-          echo $env:CC
-          . ./configure.ps1 -SpiderMonkeyVersion 91 -DisableDocs
+          . ./configure.ps1 -SpiderMonkeyVersion 91
           make.exe -f Makefile.win
+
+      - name: raw bundle of couchdb
+        run: |
+          tar cvJf couchdb${{matrix.couch-version}}${{JB}}.tar.xz couchdb
+
+      - name: check couchdb
+        continue-on-error: true
+        timeout-minutes: 25
+        shell: powershell
+        run: |
+          cd couchdb
+          $ENV:PATH="c:\relax\erl\bin;$ENV:PATH;$ENV:VCPKG_BIN"
+          $env:CC="clang-cl.exe"
+          make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}${{JB}}.txt"
 
       - name: build couchdb release
         shell: powershell
@@ -546,31 +548,22 @@ jobs:
 
       - name: bland name
         run: |
-          mv apache-couchdb*msi apache-couchdb.msi
+          mv apache-couchdb*msi apache-couchdb${{matrix.couch-version}}${{JB}}.msi
 
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            apache-couchdb.msi
-
-      - name: check couchdb
-        continue-on-error: true
-        timeout-minutes: 8
-        shell: powershell
-        run: |
-          cd couchdb
-          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
-          $env:CC="clang-cl.exe"
-          make -d -f Makefile.win check | Tee-Object -FilePath "check_results.txt"
+            couchdb${{matrix.couch-version}}${{JB}}.tar.xz
+            apache-couchdb${{matrix.couch-version}}${{JB}}.msi
 
       - name: Release check results
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            couchdb/check_results.txt
+            couchdb/check_results${{matrix.couch-version}}${{JB}}.txt
 
       - name: Setup tmate session
         if: false
