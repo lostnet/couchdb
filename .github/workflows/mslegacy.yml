@@ -377,9 +377,6 @@ jobs:
           make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
 
       - name: raw bundle of couchdb
-        continue-on-error: true
-        timeout-minutes: 8
-        shell: powershell
         run: |
           tar cvJf couchdb${{matrix.couch-version}}-old-deps.tar.xz couchdb
 
