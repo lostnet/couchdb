@@ -12,6 +12,7 @@ env:
   AUTOCONF: "C:\\mozilla-build\\msys\\local\\bin\\autoconf-2.13"
   NATIVE_WIN32_PYTHON: "C:\\mozilla-build\\python\\python2.7.exe"
   LIB: "C:\\vcpkg\\installed\\x64-windows\\lib;C:\\vcpkg\\installed\\x64-windows\\bin"
+  VCPKG_BIN: "C:\\vcpkg\\installed\\x64-windows\\bin"
   INCLUDE: "C:\\vcpkg\\installed\\x64-windows\\include"
   LIBPATH: "C:\\vcpkg\\installed\\x64-windows\\lib"
   LDFLAGS: "/LIBPATH:C:\\vcpkg\\installed\\x64-windows\\lib /LIBPATH:C:\\vcpkg\\installed\\x64-windows\\bin icuin.lib icudt.lib icuuc.lib"
@@ -376,7 +377,7 @@ jobs:
         shell: powershell
         run: |
           cd couchdb
-          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH;$ENV:LIB"
+          $ENV:PATH="c:\relax\erl\bin;$ENV:PATH;$ENV:VCPKG_BIN"
           $env:CC="clang-cl.exe"
           make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
 
