@@ -372,7 +372,7 @@ jobs:
         shell: powershell
         run: |
           cd couchdb
-          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH"
+          $ENV:PATH="c:\relax\llvm\bin;c:\relax\erl\bin;$ENV:PATH;$ENV:LIB"
           $env:CC="clang-cl.exe"
           make -d -f Makefile.win eunit elixir-suite exunit mango-test | Tee-Object -FilePath "check_results${{matrix.couch-version}}_old_deps.txt"
 
