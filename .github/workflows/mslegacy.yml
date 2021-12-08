@@ -313,7 +313,7 @@ jobs:
         run: |
           git clone https://github.com/apache/couchdb
           cd couchdb
-          git checkout "053595cf9b536801e8bd39dd54f6526f463dfdb9"
+          git checkout main
           sed -i -e 's@{tag, "v1.3.4"}@"74a31ce5a14be60b5cd2062da771deff71a06599"@' rebar.config.script
           sed -i -e 's@1.0.5-1@1.0.9-1@' rebar.config.script
           sed -i -e 's@{tag, "v1.2.2"}@"74a31ce5a14be60b5cd2062da771deff71a06599"@' src/ebtree/rebar.config
