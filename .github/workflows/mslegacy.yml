@@ -4,7 +4,6 @@ on: [workflow_dispatch,push]
 
 env:
   WXWIDGETS_VERSION: 3.1.4
-  BUILD_CONFIGURATION: Release  
   MOZ_MAKE_FLAGS: "-j2"
   ERL_PATH: "C:\\relax\\erl\\bin"
   MSVC_PATH: "C:\\relax\\msvc"
