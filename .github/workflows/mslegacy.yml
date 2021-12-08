@@ -228,7 +228,7 @@ jobs:
     strategy:
       matrix:
         couch-version: ['3', '4']
-        deps: ['msdeps9','msdeps11']
+        deps: ['msdeps9', 'msdeps11']
     defaults:
       run:
         shell: wsl-bash {0}
@@ -245,20 +245,7 @@ jobs:
           additional-packages:
             unzip
 
-      - name: Install FoundationDB (Windows)
-        shell: pwsh
-        if: ${{ matrix.couch-version == '4' }}
-        run: |
-          Set-PSDebug -Trace 1
-          Invoke-WebRequest -Uri https://www.foundationdb.org/downloads/$env:FDB_VERSION/windows/installers/foundationdb-$env:FDB_VERSION-x64.msi -OutFile foundationdb-$env:FDB_VERSION-x64.msi
-          msiexec /i foundationdb-$env:FDB_VERSION-x64.msi /passive
-          echo "c:/Program Files/foundationdb/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
-      - name: python for docs
-        shell: pwsh
-        run: |
-          python -m pip install --upgrade pip
-          pip install --upgrade sphinx docutils pygments nose hypothesis sphinx_rtd_theme
 
       - name: checkout couchdb-glazier
         run: |
@@ -275,7 +262,8 @@ jobs:
             vcpkgmozjs91.tar.xz
             otp-24.tar.xz
             Precompiled.zip
-          key: msdeps${{matrix.deps}}
+            foundationdb-$env:FDB_VERSION-x64.msi
+          key: windeps${{matrix.deps}}
 
       - name: download artifacts
         if: steps.getdeps.outputs.cache-hit != 'true'
@@ -284,6 +272,15 @@ jobs:
           Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/${{matrix.deps}}/vcpkgmozjs91.tar.xz
           Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/${{matrix.deps}}/otp-24.tar.xz
           Start-BitsTransfer -Source https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+          Invoke-WebRequest -Uri https://www.foundationdb.org/downloads/$env:FDB_VERSION/windows/installers/foundationdb-$env:FDB_VERSION-x64.msi -OutFile foundationdb-$env:FDB_VERSION-x64.msi
+
+      - name: Install FoundationDB (Windows)
+        shell: pwsh
+        if: ${{ matrix.couch-version == '4' }}
+        run: |
+          Set-PSDebug -Trace 1
+          msiexec /i foundationdb-$env:FDB_VERSION-x64.msi /passive
+          echo "c:/Program Files/foundationdb/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: setup icu and mozjs again
         run: |
@@ -432,6 +429,12 @@ jobs:
           additional-packages:
             unzip
 
+      - name: python for docs
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install --upgrade sphinx docutils pygments nose hypothesis sphinx_rtd_theme
+
       - name: checkout couchdb-glazier
         run: |
           git clone https://github.com/apache/couchdb-glazier
@@ -460,13 +463,23 @@ jobs:
         with:
           path: |
             Precompiled.zip
-          key: eli194
+            foundationdb-$env:FDB_VERSION-x64.msi
+          key: winurideps
 
       - name: download Elixir
         if: steps.getelixir.outputs.cache-hit != 'true'
         shell: powershell
         run: |
           Start-BitsTransfer -Source https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
+          Invoke-WebRequest -Uri https://www.foundationdb.org/downloads/$env:FDB_VERSION/windows/installers/foundationdb-$env:FDB_VERSION-x64.msi -OutFile foundationdb-$env:FDB_VERSION-x64.msi
+
+      - name: Install FoundationDB (Windows)
+        shell: pwsh
+        if: ${{ matrix.couch-version == '4' }}
+        run: |
+          Set-PSDebug -Trace 1
+          msiexec /i foundationdb-$env:FDB_VERSION-x64.msi /passive
+          echo "c:/Program Files/foundationdb/bin" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
 
       - name: setup icu and mozjs again
         run: |
