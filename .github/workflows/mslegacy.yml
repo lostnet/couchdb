@@ -132,11 +132,17 @@ jobs:
   mozjs:
     strategy:
       matrix:
-        mozjs-version: ['91']
+        mozjs-version: ['78', '91']
     runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v2
+
+    - name: fix rustc version
+      shell: powershell
+      run: |
+        rustup toolchain install 1.56.1
+        rustup default 1.56.1
 
     - name: Install deps on windows
       shell: powershell
