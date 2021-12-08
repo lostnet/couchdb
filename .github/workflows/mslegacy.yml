@@ -228,6 +228,7 @@ jobs:
     strategy:
       matrix:
         couch-version: ['3', '4']
+        deps: ['msdeps9','msdeps11']
     defaults:
       run:
         shell: wsl-bash {0}
@@ -274,14 +275,14 @@ jobs:
             vcpkgmozjs91.tar.xz
             otp-24.tar.xz
             Precompiled.zip
-          key: msdeps9key
+          key: msdeps${{matrix.deps}}
 
       - name: download artifacts
         if: steps.getdeps.outputs.cache-hit != 'true'
         shell: powershell
         run: |
-          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps9/vcpkgmozjs91.tar.xz
-          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps9/otp-24.tar.xz
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/${{matrix.deps}}/vcpkgmozjs91.tar.xz
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/${{matrix.deps}}/otp-24.tar.xz
           Start-BitsTransfer -Source https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
 
       - name: setup icu and mozjs again
