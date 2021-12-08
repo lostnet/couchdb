@@ -4,6 +4,8 @@ on: [workflow_dispatch,push]
 
 env:
   WXWIDGETS_VERSION: 3.1.4
+  RUSTVER: 1.56.1
+  FDB_VERSION: '6.2.30'
   MOZ_MAKE_FLAGS: "-j2"
   ERL_PATH: "C:\\relax\\erl\\bin"
   MSVC_PATH: "C:\\relax\\msvc"
@@ -141,8 +143,8 @@ jobs:
     - name: fix rustc version
       shell: powershell
       run: |
-        rustup toolchain install 1.56.1
-        rustup default 1.56.1
+        rustup toolchain install ${{env.RUSTVER}}
+        rustup default ${{env.RUSTVER}}
 
     - name: Install deps on windows
       shell: powershell
@@ -222,7 +224,6 @@ jobs:
   coucholddeps:
     runs-on: windows-latest
     env:
-      FDB_VERSION: '6.2.30'
       JB: '-old-deps'
     strategy:
       matrix:
@@ -231,6 +232,11 @@ jobs:
       run:
         shell: wsl-bash {0}
     steps:
+      - name: fix rustc version
+        shell: powershell
+        run: |
+          rustup toolchain install ${{env.RUSTVER}}
+          rustup default ${{env.RUSTVER}}
           
       - uses: Vampire/setup-wsl@v1
         with:
@@ -268,7 +274,7 @@ jobs:
             vcpkgmozjs91.tar.xz
             otp-24.tar.xz
             Precompiled.zip
-          key: msdeps9
+          key: msdeps9key
 
       - name: download artifacts
         if: steps.getdeps.outputs.cache-hit != 'true'
@@ -404,7 +410,6 @@ jobs:
     needs: [ mozjs, erlang ]
     runs-on: windows-latest
     env:
-      FDB_VERSION: '6.2.30'
       JB: ''
     strategy:
       matrix:
@@ -413,6 +418,13 @@ jobs:
       run:
         shell: wsl-bash {0}
     steps:
+
+      - name: fix rustc version
+        shell: powershell
+        run: |
+          rustup toolchain install ${{env.RUSTVER}}
+          rustup default ${{env.RUSTVER}}
+
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
@@ -447,7 +459,7 @@ jobs:
         with:
           path: |
             Precompiled.zip
-          key: msdeps9
+          key: eli194
 
       - name: download Elixir
         if: steps.getelixir.outputs.cache-hit != 'true'
