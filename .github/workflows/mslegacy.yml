@@ -3,9 +3,9 @@ name: MSLegacy
 on: [workflow_dispatch,push]
 
 env:
-  SOLUTION_FILE_PATH: .
   WXWIDGETS_VERSION: 3.1.4
   BUILD_CONFIGURATION: Release  
+  MOZ_MAKE_FLAGS: "-j2"
   ERL_PATH: "C:\\relax\\erl\\bin"
   MSVC_PATH: "C:\\relax\\msvc"
   ADD_PATH: "C:\\mozilla-build\\bin;C:\\mozilla-build\\msys\\bin;C:\\mozilla-build\\msys\\local\\bin;C:\\vcpkg\\installed\\x64-windows\\bin;"
@@ -34,10 +34,13 @@ jobs:
       - uses: Vampire/setup-wsl@v1
         with:
           distribution: Ubuntu-20.04
+          additional-packages:
+            g++-mingw-w64
+            gcc-mingw-w64
+            make
+            autoconf
+            unzip
           
-      - name: Install WSL dependencies
-        run: apt update && apt install -y g++-mingw-w64 gcc-mingw-w64 make autoconf unzip
-        
       - name: Install openssl
         shell: cmd
         run: |
@@ -75,7 +78,7 @@ jobs:
           nuget install Microsoft.Web.WebView2 -Version 1.0.705.50 -Source https://api.nuget.org/v3/index.json
           rename Microsoft.Web.WebView2.1.0.705.50 webview2
       - name: Build wxWidgets
-        if: steps.wxwidgets-cache.outputs.cache-hit != 'true'
+        if: steps.wxidgets-cache.outputs.cache-hit != 'true'
         shell: cmd
         run: |
           cd wxWidgets\\build\\msw
@@ -252,19 +255,22 @@ jobs:
           git checkout main
           sed -i -e 's@2017.*14.16.27012@2019\\Enterprise\\VC\\Redist\\MSVC\\14.16.27012@' installer/couchdb.wxs.in
 
-      - name: download moz artifacts
-        shell: powershell
-        run: |
-          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps5/vcpkgmozjs91.tar.xz
+      - name: Cache of deps
+        id: getdeps
+        uses: actions/cache@v2
+        with:
+          path: |
+            vcpkgmozjs91.tar.xz
+            otp-24.tar.xz
+            Precompiled.zip
+          key: msdeps9
 
-      - name: download otp artifacts
+      - name: download artifacts
+        if: steps.getdeps.outputs.cache-hit != 'true'
         shell: powershell
         run: |
-          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps5/otp-24.tar.xz
-
-      - name: download Elixir
-        shell: powershell
-        run: |
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps9/vcpkgmozjs91.tar.xz
+          Start-BitsTransfer -Source https://github.com/lostnet/couchdb/releases/download/msdeps9/otp-24.tar.xz
           Start-BitsTransfer -Source https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
 
       - name: setup icu and mozjs again
@@ -430,7 +436,16 @@ jobs:
         with:
           name: otp-24.tar.xz
 
+      - name: Cache of deps
+        id: getelixir
+        uses: actions/cache@v2
+        with:
+          path: |
+            Precompiled.zip
+          key: msdeps9
+
       - name: download Elixir
+        if: steps.getelixir.outputs.cache-hit != 'true'
         shell: powershell
         run: |
           Start-BitsTransfer -Source https://github.com/elixir-lang/elixir/releases/download/v1.9.4/Precompiled.zip
